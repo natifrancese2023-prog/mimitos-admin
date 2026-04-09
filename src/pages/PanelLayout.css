@@ -1,0 +1,233 @@
+/* ============================================================
+   PANELLAYOUT.CSS - Limpio y Corregido
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;500;600&display=swap');
+
+:root {
+  --amarillo: #FFF0A0;
+  --amarillo-borde: #F5D000;
+  --naranja: #E8835A;
+  --naranja-oscuro: #C9603A;
+  --blanco: #FFFDF5;
+  --fondo-panel: #FAF6EE;
+  --sidebar-bg: #FFFDF5;
+  --texto: #5A4A3A;
+  --texto-suave: #9A8A7A;
+  --borde: #EDE8DF;
+  --sidebar-ancho: 220px;
+  --topbar-alto: 60px;
+}
+
+*, *::before, *::after { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--fondo-panel);
+  color: var(--texto);
+}
+
+.panel-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-ancho) 1fr;
+  min-height: 100vh;
+  transition: grid-template-columns 0.3s ease;
+}
+
+.panel-layout.sidebar-closed {
+  grid-template-columns: 0 1fr;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+  background: var(--sidebar-bg);
+  border-right: 1.5px solid var(--borde);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  /* El scroll lo manejamos en el nav, no aquí para que el footer sea fijo */
+  overflow: hidden; 
+  transition: width 0.3s ease;
+  width: var(--sidebar-ancho);
+  z-index: 100;
+}
+
+.panel-layout.sidebar-closed .sidebar {
+  width: 0;
+  border-right: none;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px 16px;
+  border-bottom: 1.5px solid var(--borde);
+  white-space: nowrap;
+}
+
+.sidebar-logo {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--naranja);
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: var(--texto-suave);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.sidebar-toggle:hover { 
+  background: var(--borde); 
+}
+
+/* --- NAVEGACIÓN (CON SCROLL) --- */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  flex: 1;
+  /* Esto permite que si hay muchos botones, se pueda scrollear */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.nav-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--texto-suave);
+  padding: 8px 16px 4px;
+  white-space: nowrap;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: var(--texto-suave);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-left: 3px solid transparent;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.nav-item:hover {
+  background: var(--amarillo);
+  color: var(--texto);
+}
+
+.nav-item.active {
+  background: #FFF8E6;
+  color: var(--naranja);
+  border-left-color: var(--naranja);
+  font-weight: 700;
+}
+
+.nav-icon { font-size: 1.1rem; }
+
+/* --- FOOTER --- */
+.sidebar-footer {
+  padding: 12px;
+  border-top: 1.5px solid var(--borde);
+  margin-top: auto; /* Empuja el footer al final */
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  background: none;
+  border: 1.5px solid var(--borde);
+  border-radius: 10px;
+  color: var(--texto-suave);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-logout:hover {
+  background: #FFF0F0;
+  color: #E05555;
+  border-color: #E05555;
+}
+
+/* --- CONTENIDO PRINCIPAL --- */
+.panel-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  height: var(--topbar-alto);
+  background: var(--blanco);
+  border-bottom: 1.5px solid var(--borde);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.btn-menu {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: var(--texto);
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.topbar-saludo {
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+
+.panel-content {
+  flex: 1;
+  padding: 28px;
+  background: var(--fondo-panel);
+  overflow-y: auto;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .panel-layout {
+    grid-template-columns: 0 1fr;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 0;
+  }
+
+  .panel-layout.sidebar-open .sidebar {
+    width: var(--sidebar-ancho);
+  }
+}

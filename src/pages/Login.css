@@ -1,0 +1,293 @@
+/* ============================================================
+   LOGIN.CSS - Estilos de la pantalla de login de Mimitos
+   
+   CSS Variables: definen los colores de la marca en un solo lugar.
+   Si querés cambiar un color, lo cambiás acá y se actualiza en todo.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;500;600&display=swap');
+
+:root {
+  --amarillo:       #FFF0A0;      /* amarillo pastel principal */
+  --amarillo-oscuro:#F5D000;      /* amarillo para acentos */
+  --naranja:        #E8835A;      /* naranja opaco de la marca */
+  --naranja-oscuro: #C9603A;      /* naranja más intenso para hover */
+  --blanco:         #FFFDF5;      /* blanco cálido */
+  --gris-texto:     #5A4A3A;      /* marrón suave para texto */
+  --gris-claro:     #F7F0E6;      /* fondo de inputs */
+  --error:          #E05555;
+  --sombra:         0 8px 32px rgba(232, 131, 90, 0.15);
+}
+
+/* ============================================================
+   RESET BÁSICO
+   Elimina márgenes y padding por defecto del navegador
+   box-sizing: border-box hace que padding no agrande los elementos
+   ============================================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--blanco);
+  color: var(--gris-texto);
+}
+
+/* ============================================================
+   LAYOUT PRINCIPAL
+   display: grid divide la pantalla en dos columnas iguales
+   height: 100vh = 100% de la altura de la ventana
+   ============================================================ */
+.login-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;  /* dos columnas iguales */
+  min-height: 100vh;
+}
+
+/* ============================================================
+   LADO IZQUIERDO - BRANDING
+   ============================================================ */
+.login-branding {
+  background-color: var(--naranja);
+  position: relative;        /* necesario para posicionar los círculos hijos */
+  overflow: hidden;          /* oculta lo que se sale del contenedor */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.branding-content {
+  position: relative;
+  z-index: 2;               /* z-index controla qué elemento queda "encima" */
+  text-align: center;
+  color: white;
+}
+
+.logo-icon {
+  font-size: 5rem;
+  display: block;
+  margin-bottom: 1rem;
+  animation: flotar 3s ease-in-out infinite; /* animación suave */
+}
+
+/* @keyframes define una animación CSS con nombre propio */
+@keyframes flotar {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+.brand-name {
+  font-family: 'Baloo 2', cursive;
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: white;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.brand-tagline {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  margin-top: 0.5rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Círculos decorativos de fondo */
+.deco-circle {
+  position: absolute;       /* se posicionan respecto al padre con position:relative */
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.circle-1 { width: 300px; height: 300px; top: -80px;  left: -80px; }
+.circle-2 { width: 200px; height: 200px; bottom: -60px; right: -60px; }
+.circle-3 { width: 120px; height: 120px; top: 50%;    right: 30px; }
+
+/* ============================================================
+   LADO DERECHO - FORMULARIO
+   ============================================================ */
+.login-form-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--blanco);
+  padding: 2rem;
+}
+
+/* La "card" es el contenedor blanco con sombra y bordes redondeados */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: var(--sombra);
+  border: 1.5px solid var(--amarillo);
+  /* animation: aparece suavemente al cargar */
+  animation: aparecer 0.5s ease;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.login-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.login-header h2 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--gris-texto);
+}
+
+.login-header p {
+  color: #9A8A7A;
+  margin-top: 0.3rem;
+  font-size: 0.95rem;
+}
+
+/* ============================================================
+   CAMPOS DEL FORMULARIO
+   ============================================================ */
+.login-form {
+  display: flex;
+  flex-direction: column;  /* apila los elementos verticalmente */
+  gap: 1.2rem;             /* espacio entre elementos */
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field-group label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gris-texto);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.field-group input {
+  padding: 0.85rem 1rem;
+  border: 2px solid #EDE8DF;
+  border-radius: 12px;
+  background: var(--gris-claro);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  color: var(--gris-texto);
+  /* transition suaviza el cambio de estilos en hover/focus */
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+/* :focus se aplica cuando el input está seleccionado */
+.field-group input:focus {
+  border-color: var(--naranja);
+  box-shadow: 0 0 0 3px rgba(232, 131, 90, 0.15);
+  background: white;
+}
+
+/* ============================================================
+   MENSAJE DE ERROR
+   ============================================================ */
+.error-msg {
+  background: #FFF0F0;
+  border: 1.5px solid var(--error);
+  color: var(--error);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   BOTÓN DE LOGIN
+   ============================================================ */
+.btn-login {
+  padding: 0.95rem;
+  background: var(--naranja);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;         /* cambia el cursor a manito */
+  transition: background 0.2s, transform 0.1s;
+  margin-top: 0.5rem;
+}
+
+/* :hover se aplica cuando el mouse está encima */
+.btn-login:hover:not(:disabled) {
+  background: var(--naranja-oscuro);
+  transform: translateY(-2px);  /* sube levemente el botón */
+}
+
+/* :active se aplica cuando se presiona */
+.btn-login:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* :disabled se aplica cuando el botón está deshabilitado */
+.btn-login:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   RESPONSIVE - Para pantallas chicas (celulares)
+   @media aplica estilos solo si se cumple la condición
+   ============================================================ */
+@media (max-width: 768px) {
+  .login-page {
+    grid-template-columns: 1fr;  /* una sola columna en mobile */
+  }
+
+  .login-branding {
+    min-height: 220px;
+  }
+
+  .brand-name {
+    font-size: 2.5rem;
+  }
+
+  .circle-1, .circle-2, .circle-3 {
+    display: none;  /* ocultamos los círculos en mobile */
+  }
+}
+
+/* ============================================================
+   ✅ NUEVO: estilos para validaciones de campos
+   ============================================================ */
+
+/* Borde rojo cuando el campo tiene error */
+.field-group input.input-error {
+  border-color: var(--error);
+  background: #FFF8F8;
+}
+
+.field-group input.input-error:focus {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(224, 85, 85, 0.15);
+}
+
+/* Mensaje de error debajo del campo */
+.campo-error {
+  font-size: 0.78rem;
+  color: var(--error);
+  font-weight: 600;
+  margin-top: 2px;
+  /* display: block para que ocupe su propia línea */
+  display: block;
+}
