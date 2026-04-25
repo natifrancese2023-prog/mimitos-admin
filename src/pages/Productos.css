@@ -488,9 +488,40 @@
 @media (max-width: 768px) {
   .productos-page { padding: 1rem; }
   .prod-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .prod-header h1 { font-size: 1.3rem; }
+  .prod-header-acciones { flex-wrap: wrap; gap: 0.5rem; }
   .form-grid { grid-template-columns: 1fr; }
+
+  /* Filtros apilados */
+  .prod-filtros { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+  .filtro-grupo { min-width: unset; width: 100%; }
+  .btn-limpiar { align-self: stretch; text-align: center; }
+
+  /* Tabla scroll horizontal */
+  .prod-tabla-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .prod-tabla { min-width: 520px; }
   .prod-tabla th:nth-child(4),
   .prod-tabla td:nth-child(4) { display: none; }
+
+  /* Modal y variantes */
+  .modal { max-width: 100%; }
+  .modal-body { padding: 1rem 1rem; }
+  .modal-footer { flex-wrap: wrap; gap: 0.5rem; }
+
+  .variante-header-labels { display: none; }
+  .variante-inputs { grid-template-columns: 1fr 1fr; }
+  .variante-row-card { flex-wrap: wrap; }
+
+  .acciones { flex-wrap: wrap; gap: 0.3rem; }
+}
+
+@media (max-width: 480px) {
+  .btn-primario, .btn-secundario, .btn-danger { padding: 0.55rem 1rem; font-size: 0.85rem; }
+  .modal-overlay { padding: 0.5rem; align-items: flex-end; }
+  .modal { border-bottom-left-radius: 0; border-bottom-right-radius: 0; max-height: 95vh; max-width: 100%; }
+  .variante-inputs { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .nueva-categoria { flex-direction: column; }
+  .nueva-categoria input { width: 100%; }
 }
 .mini-foto {
   width: 40px;

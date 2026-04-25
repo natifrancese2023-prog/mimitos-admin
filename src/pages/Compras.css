@@ -128,7 +128,35 @@
 @media (max-width: 768px) {
   .compras-page { padding: 1rem; }
   .comp-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .comp-header h1 { font-size: 1.3rem; }
   .comp-resumen { grid-template-columns: repeat(2, 1fr); }
   .form-grid-2 { grid-template-columns: 1fr; }
   .linea-compra { grid-template-columns: 1fr 70px 90px auto; }
+
+  /* Tabla con scroll horizontal */
+  .comp-tabla-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .comp-tabla { min-width: 560px; }
+
+  /* Filtros apilados */
+  .comp-filtros { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+  .filtro-grupo { min-width: unset; width: 100%; }
+  .btn-limpiar { align-self: stretch; text-align: center; }
+
+  /* Modal */
+  .modal { max-width: 100%; }
+  .modal-grande { max-width: 100%; }
+  .modal-body { padding: 1rem; }
+  .modal-footer { flex-wrap: wrap; gap: 0.5rem; }
+
+  .acciones { flex-wrap: wrap; gap: 0.3rem; }
+}
+
+@media (max-width: 480px) {
+  .comp-resumen { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+  .linea-compra { grid-template-columns: 1fr 60px 80px auto; gap: 0.3rem; }
+  .btn-primario, .btn-secundario { padding: 0.55rem 1rem; font-size: 0.85rem; }
+  .modal-overlay { padding: 0.5rem; align-items: flex-end; }
+  .modal { border-bottom-left-radius: 0; border-bottom-right-radius: 0; max-height: 95vh; }
+  .pago-controles { flex-direction: column; align-items: stretch; }
+  .pago-controles select { width: 100%; }
 }

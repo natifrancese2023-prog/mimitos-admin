@@ -138,14 +138,41 @@
 /* Responsive */
 @media (max-width: 1024px) {
   .dash-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .dash-grid-3 { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
   .dashboard { padding: 1rem; }
   .dash-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .dash-header h1 { font-size: 1.3rem; }
   .dash-grid-4 { grid-template-columns: repeat(2, 1fr); }
   .dash-grid-2 { grid-template-columns: 1fr; }
+  .dash-grid-3 { grid-template-columns: 1fr; }
   .tarjeta-valor { font-size: 1.1rem; }
+
+  /* Filtro píldora apilado */
+  .dash-filtro-pildora {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 16px;
+  }
+  .botones-acceso-rapido { flex-wrap: wrap; gap: 0.3rem; }
+  .inputs-manuales { flex-wrap: wrap; gap: 0.3rem; }
+  .divisor-vertical { display: none; }
+  .btn-recargar-dashboard { margin-left: 0; width: 100%; }
+
+  /* Tarjetas más compactas */
+  .tarjeta { padding: 0.85rem 1rem; gap: 0.75rem; }
+  .tarjeta-icono { font-size: 1.4rem; }
+}
+
+@media (max-width: 480px) {
+  .dash-grid-4 { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+  .tarjeta-valor { font-size: 1rem; }
+  .tarjeta-label { font-size: 0.75rem; }
+  .dash-card { padding: 1rem 1.1rem; }
+  .estado-item { font-size: 0.85rem; padding: 0.55rem 0.75rem; }
 }
 
 .dash-filtro-pildora {

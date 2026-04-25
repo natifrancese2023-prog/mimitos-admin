@@ -263,8 +263,30 @@ body {
   }
 
   .circle-1, .circle-2, .circle-3 {
-    display: none;  /* ocultamos los círculos en mobile */
+    display: none;
   }
+
+  .login-form-side {
+    padding: 1.5rem 1rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .login-card {
+    padding: 1.75rem 1.25rem;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-branding { min-height: 180px; }
+  .logo-icon { font-size: 3.5rem; }
+  .brand-name { font-size: 2rem; }
+  .brand-tagline { font-size: 0.85rem; letter-spacing: 1px; }
+  .login-card { padding: 1.5rem 1rem; border-radius: 12px; }
+  .login-header h2 { font-size: 1.5rem; }
+  .btn-login { font-size: 1rem; padding: 0.85rem; }
+  .field-group input { padding: 0.75rem 0.9rem; font-size: 0.95rem; }
 }
 
 /* ============================================================

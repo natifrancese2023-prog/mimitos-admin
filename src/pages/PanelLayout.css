@@ -225,9 +225,31 @@ body {
     left: 0;
     top: 0;
     width: 0;
+    z-index: 200;
+    box-shadow: none;
+    transition: width 0.3s ease, box-shadow 0.3s ease;
   }
 
   .panel-layout.sidebar-open .sidebar {
     width: var(--sidebar-ancho);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.12);
   }
+
+  /* Overlay oscuro al abrir sidebar en mobile */
+  .panel-layout.sidebar-open::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 199;
+  }
+
+  .topbar { padding: 0 16px; }
+  .topbar-saludo { font-size: 0.82rem; }
+  .panel-content { padding: 16px; }
+}
+
+@media (max-width: 480px) {
+  .panel-content { padding: 12px; }
+  .topbar { height: 52px; }
 }

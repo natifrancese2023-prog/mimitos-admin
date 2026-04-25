@@ -115,5 +115,34 @@
 @media (max-width: 768px) {
   .proveedores-page { padding: 1rem; }
   .prov-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .prov-header h1 { font-size: 1.3rem; }
   .hist-resumen { grid-template-columns: repeat(3, 1fr); }
+
+  /* Tabla scroll horizontal */
+  .prov-tabla-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .prov-tabla { min-width: 480px; }
+
+  /* Ocultar columnas menos críticas */
+  .prov-tabla th:nth-child(3),
+  .prov-tabla td:nth-child(3) { display: none; }
+
+  /* Modal */
+  .modal { max-width: 100%; }
+  .modal-grande { max-width: 100%; }
+  .modal-chico { max-width: 100%; }
+  .modal-body { padding: 1rem; }
+  .modal-footer { flex-wrap: wrap; gap: 0.5rem; }
+
+  /* Búsqueda full width */
+  .prov-busqueda { width: 100%; box-sizing: border-box; }
+
+  .acciones { flex-wrap: wrap; gap: 0.3rem; }
+}
+
+@media (max-width: 480px) {
+  .hist-resumen { grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+  .resumen-valor { font-size: 1.1rem; }
+  .btn-primario, .btn-secundario, .btn-danger { padding: 0.55rem 1rem; font-size: 0.85rem; }
+  .modal-overlay { padding: 0.5rem; align-items: flex-end; }
+  .modal { border-bottom-left-radius: 0; border-bottom-right-radius: 0; max-height: 95vh; }
 }
