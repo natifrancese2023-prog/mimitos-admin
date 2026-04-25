@@ -63,37 +63,45 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    console.log("CLICK LOGIN");
 
     const errores = validarFormulario(email, contrasena);
+    console.log("ERRORES:", errores);
+
     setErroresCampos(errores);
-    if (Object.keys(errores).length > 0) return;
+
+    if (Object.keys(errores).length > 0) {
+      console.log("NO ENVÍA POR VALIDACIÓN");
+      return;
+    }
+
+    console.log("ANTES DEL AXIOS");
 
     setCargando(true);
+
     try {
-  const respuesta = await axios.post(`${API_URL}/usuarios/login`, {
-    email,
-    contraseña: contrasena,
-  });
+      const respuesta = await axios.post(`${API_URL}/usuarios/login`, {
+        email,
+        contrasena: contrasena,
+      });
 
-  console.log("1 - Respuesta recibida:", respuesta.data);
-  localStorage.setItem("token", respuesta.data.token);
-  console.log("2 - Token guardado:", localStorage.getItem("token"));
-  localStorage.setItem("rol", "dueno");
-  console.log("3 - Antes del navigate");
-  navigate("/panel");
-  console.log("4 - Después del navigate");
+      console.log("RESPUESTA:", respuesta.data);
 
-} catch (err) {
-  console.log("ERROR:", err);
-  const mensaje = err.response?.data?.error || "Error al iniciar sesión";
-  setError(mensaje);
-}
+      localStorage.setItem("token", respuesta.data.token);
+      localStorage.setItem("rol", "dueno");
+
+      navigate("/panel");
+    } catch (err) {
+      console.log("ERROR AXIOS:", err);
+      const mensaje = err.response?.data?.error || "Error al iniciar sesión";
+      setError(mensaje);
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (
     <div className="login-page">
-
       <div className="login-branding">
         <div className="branding-content">
           <div className="logo-icon">🍼</div>
@@ -107,14 +115,12 @@ export default function Login() {
 
       <div className="login-form-side">
         <div className="login-card">
-
           <div className="login-header">
             <h2>Bienvenido 👋</h2>
             <p>Ingresá tus datos para continuar</p>
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
-
             <div className="field-group">
               <label htmlFor="email">Correo electrónico</label>
               <input
@@ -147,20 +153,14 @@ export default function Login() {
               )}
             </div>
 
-            {error && (
-              <div className="error-msg">
-                ⚠️ {error}
-              </div>
-            )}
+            {error && <div className="error-msg">⚠️ {error}</div>}
 
             <button type="submit" className="btn-login" disabled={cargando}>
               {cargando ? "Ingresando..." : "Ingresar"}
             </button>
-
           </form>
         </div>
       </div>
-
     </div>
   );
 }

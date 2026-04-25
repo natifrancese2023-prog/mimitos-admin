@@ -69,6 +69,7 @@ export default function Productos() {
         axios.get(`${API_URL}/productos`, { headers: getAuthHeader() }),
         axios.get(`${API_URL}/categorias`, { headers: getAuthHeader() }),
       ]);
+      console.log("DEBUG PRODUCTOS:", productosRes.data[0]);
       setProductos(productosRes.data);
       setCategorias(categoriasRes.data);
     } catch (err) {
@@ -107,35 +108,40 @@ export default function Productos() {
 
     productosFiltrados.forEach((p) => {
       if (p.variantes && p.variantes.length > 0) {
-        // Si tiene variantes, creamos una fila por cada talle/color
-        p.variantes.forEach((v) => {
+        // Producto CON variantes: una fila por variante.
+        // p.id_variante no existe en el raiz — precios/stock vienen del objeto variante.
+        p.variantes.forEach((v, vIdx) => {
+          const varKey =
+            v.id_variante != null
+              ? `prod-${p.id_producto}-var-${v.id_variante}`
+              : `prod-${p.id_producto}-var-idx-${vIdx}`;
           filas.push({
             ...p,
             ...v,
             esVariante: true,
-            // Priorizamos el nombre de la variante
+            stock: Number(v.stock) || 0,
+            precio_venta: Number(v.precio_venta) || 0,
+            precio_compra: Number(v.precio_compra) || 0,
             nombre_mostrar_variante: v.nombre_variante || "Sin nombre",
-            keyUnique: `prod-${p.id_producto}-var-${v.id_variante}`,
+            keyUnique: varKey,
           });
         });
       } else {
-        // Si NO tiene variantes, creamos una sola fila
+        // Producto SIN variantes: una sola fila con los agregados del backend.
         filas.push({
           ...p,
           esVariante: false,
-          stock: p.stock_total || 0,
-          precio_compra: p.precio_compra_min || 0,
-          precio_venta: p.precio_min || 0,
-          nombre_mostrar_variante: "Estándar", // O podés dejarlo vacío ""
+          stock: Number(p.stock_total) || 0,
+          precio_compra: Number(p.precio_compra_min) || 0,
+          precio_venta: Number(p.precio_min) || 0,
+          nombre_mostrar_variante: "Estandar",
           keyUnique: `prod-${p.id_producto}-unico`,
         });
       }
     });
 
-    // Ordenamos alfabéticamente por nombre de producto
     return filas.sort((a, b) => a.nombre.localeCompare(b.nombre));
   }, [productosFiltrados]);
-
   const limpiarFiltros = () => {
     setFiltroCategoria("");
     setFiltroStockMin("");
@@ -236,24 +242,26 @@ export default function Productos() {
   };
 
   // ============================================================
-  // GUARDAR (CREATE / UPDATE)
+  // GUARDAR (CREATE / UPDATE) - Versión Corregida
   // ============================================================
   const handleGuardar = async () => {
     const errores = validarProducto(productoActual, variantes);
     setErroresForm(errores);
     if (Object.keys(errores).length > 0) return;
 
-    // --- AGREGADO: Validación de seguridad previa ---
-    const headers = getAuthHeader();
-    if (!headers.Authorization) {
+    // 1. Obtención de headers (Authorization)
+    const authHeaders = getAuthHeader();
+    if (!authHeaders.Authorization) {
       setErroresForm({
         general: "Sesión expirada. Por favor, volvé a loguearte.",
       });
       return;
     }
+    console.log(authHeaders);
 
     setGuardando(true);
     try {
+      // 2. Construcción del FormData
       const formData = new FormData();
       formData.append("nombre", productoActual.nombre.trim());
       formData.append("descripcion", productoActual.descripcion.trim());
@@ -273,35 +281,44 @@ export default function Productos() {
         tieneVariantes ? 0 : Number(productoActual.precio_venta || 0),
       );
 
-      // Importante: El backend debe estar preparado para parsear este string JSON
+      // Importante para el backend: enviar variantes como string JSON
       formData.append("variantes", JSON.stringify(variantes));
 
       if (imagenArchivo) {
         formData.append("imagen", imagenArchivo);
       }
 
-      // --- FIX: Configuración limpia para Axios ---
-      const config = { headers };
+      // 3. Configuración de Axios — NO fijar Content-Type manualmente.
+      // Axios detecta el FormData y genera el boundary correcto automáticamente.
+      // Forzar "multipart/form-data" sin boundary rompe el parseo de Multer → 500.
+      const config = { headers: { ...authHeaders } };
 
+      // 4. Ejecución según el modo (POST o PUT)
       if (modoEdicion) {
         await axios.put(
           `${API_URL}/productos/${productoActual.id_producto}`,
           formData,
           config,
         );
-        setMensajeExito("Actualizado correctamente");
+        setMensajeExito("Producto actualizado correctamente");
       } else {
         await axios.post(`${API_URL}/productos`, formData, config);
-        setMensajeExito("Creado correctamente");
+        setMensajeExito("Producto creado correctamente");
       }
 
+      // 5. Finalización exitosa
       await cargarDatos();
       setTimeout(() => cerrarModal(), 1200);
     } catch (err) {
-      console.error("Error completo:", err);
+      console.error("Error completo en handleGuardar:", err);
+      // Intentamos capturar el detalle que pusimos en el backend
+      const mensajeError =
+        err.response?.data?.detalle ||
+        err.response?.data?.error ||
+        "Error al conectar con el servidor";
+
       setErroresForm({
-        general:
-          err.response?.data?.error || "Error al conectar con el servidor",
+        general: mensajeError,
       });
     } finally {
       setGuardando(false);
@@ -464,13 +481,6 @@ export default function Productos() {
           </button>
         )}
       </div>
-
-      {/* ── RESULTADO FILTROS ────────────────────────────── */}
-      {hayFiltros && (
-        <p className="prod-resultado">
-          Mostrando {productosFiltrados.length} de {productos.length} productos
-        </p>
-      )}
       {/* ── TABLA DE PRODUCTOS ───────────────────────────── */}
       {productosFiltrados.length === 0 ? (
         <div className="prod-vacio">
@@ -493,6 +503,7 @@ export default function Productos() {
             </thead>
             <tbody>
               {filasTabla.map((fila) => {
+                // Nombres exactos según tu consola:
                 const stock = Number(fila.stock) || 0;
                 const precioCompra = Number(fila.precio_compra) || 0;
                 const precioVenta = Number(fila.precio_venta) || 0;
@@ -506,7 +517,11 @@ export default function Productos() {
                     <td className="celda-foto">
                       {fila.imagen_url ? (
                         <img
-                          src={`${API_URL.replace(/\/$/, "")}${fila.imagen_url}`}
+                          src={
+                            fila.imagen_url.startsWith("http")
+                              ? fila.imagen_url
+                              : `${API_URL}${fila.imagen_url}`
+                          }
                           alt={fila.nombre}
                           className="mini-foto-tabla"
                         />
@@ -515,7 +530,7 @@ export default function Productos() {
                       )}
                     </td>
 
-                    {/* NOMBRE DEL PRODUCTO + VARIANTE (Aquí está la magia) */}
+                    {/* NOMBRE Y VARIANTE */}
                     <td>
                       <div
                         style={{
@@ -524,15 +539,12 @@ export default function Productos() {
                           gap: "2px",
                         }}
                       >
-                        {/* 1. Nombre Principal del Producto */}
                         <span
                           className="prod-nombre"
                           style={{ fontWeight: "bold", fontSize: "1rem" }}
                         >
                           {fila.nombre}
                         </span>
-
-                        {/* 2. Nombre de la Variante (Talle, Color, etc.) */}
                         <span
                           className="prod-variante"
                           style={{
@@ -541,13 +553,8 @@ export default function Productos() {
                             fontWeight: "500",
                           }}
                         >
-                          {/* Si hay nombre_variante lo muestra, sino muestra un guion o "General" */}
-                          {fila.nombre_variante
-                            ? `• ${fila.nombre_variante}`
-                            : "• Único/General"}
+                          • {fila.nombre_variante || "Único/General"}
                         </span>
-
-                        {/* 3. Descripción (opcional, bien chiquita) */}
                         {fila.descripcion && (
                           <span
                             style={{
@@ -569,7 +576,7 @@ export default function Productos() {
                       </span>
                     </td>
 
-                    {/* STOCK */}
+                    {/* STOCK - Usando stock_variante */}
                     <td>
                       <span
                         className={`badge-stock ${stock < 5 ? "stock-bajo" : "stock-ok"}`}
@@ -578,7 +585,7 @@ export default function Productos() {
                       </span>
                     </td>
 
-                    {/* PRECIO COMPRA */}
+                    {/* PRECIO COMPRA - Usando precio_compra_variante */}
                     <td>
                       $
                       {precioCompra.toLocaleString("es-AR", {
@@ -586,7 +593,7 @@ export default function Productos() {
                       })}
                     </td>
 
-                    {/* PRECIO VENTA */}
+                    {/* PRECIO VENTA - Usando precio_venta_variante */}
                     <td>
                       <span style={{ fontWeight: "bold", color: "#2e7d32" }}>
                         $
@@ -692,12 +699,11 @@ export default function Productos() {
                   <div className="variantes-panel">
                     {/* Encabezados de columna (opcional, ayuda visualmente) */}
                     {variantes.length > 0 && (
-                      <div className="variante-header-labels">
-                        <span>Nombre / Talle</span>
-                        <span>Stock</span>
-                        <span>P. Compra</span>
-                        <span>P. Venta</span>
-                        <span></span>
+                      <div className="variantes-row">
+                        <input placeholder="Nombre / talle" />
+                        <input type="number" placeholder="Stock" />
+                        <input type="number" placeholder="P. compra" />
+                        <input type="number" placeholder="P. venta" />
                       </div>
                     )}
 
@@ -861,10 +867,7 @@ export default function Productos() {
                       (modoEdicion && productoActual.imagen_url)) && (
                       <div className="preview-foto">
                         <img
-                          src={
-                            previewUrl ||
-                            `${API_URL.replace(/\/$/, "")}${productoActual.imagen_url}`
-                          }
+                          src={previewUrl || productoActual.imagen_url}
                           alt="Preview"
                         />
                         <button
