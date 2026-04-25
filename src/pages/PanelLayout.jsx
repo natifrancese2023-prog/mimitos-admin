@@ -35,7 +35,7 @@ function getNombreUsuario() {
 
 export default function PanelLayout() {
   const navigate = useNavigate();
-  const [sidebarAbierto, setSidebarAbierto] = useState(true);
+  const [sidebarAbierto, setSidebarAbierto] = useState(() => window.innerWidth > 768);
   const nombre = getNombreUsuario();
 
   // Verifica el token al montar el componente
@@ -122,6 +122,14 @@ export default function PanelLayout() {
           </button>
         </div>
       </aside>
+
+      {/* OVERLAY mobile: toca afuera para cerrar */}
+      {sidebarAbierto && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setSidebarAbierto(false)}
+        />
+      )}
 
       {/* CONTENIDO PRINCIPAL */}
       <div className="panel-main">
