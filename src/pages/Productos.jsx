@@ -266,6 +266,9 @@ export default function Productos() {
       formData.append("nombre", productoActual.nombre.trim());
       formData.append("descripcion", productoActual.descripcion.trim());
       formData.append("id_categoria", Number(productoActual.id_categoria));
+      if (!imagenArchivo && productoActual.imagen_url) {
+        formData.append("imagen_url", productoActual.imagen_url);
+      }
 
       const tieneVariantes = variantes.length > 0;
       formData.append(
