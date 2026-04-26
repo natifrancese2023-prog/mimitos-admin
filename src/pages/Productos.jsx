@@ -214,16 +214,19 @@ export default function Productos() {
     setModoEdicion(false);
     setModalProducto(true);
   };
-
   const abrirEditar = (producto) => {
     limpiarPreview(previewUrl);
     setImagenArchivo(null);
     setPreviewUrl(null);
-    // FIX: separar variantes del resto del producto
-    const { variantes: variantesProducto, ...restoProducto } = producto;
+
+    // Buscar el producto original para no perder imagen_url
+    const productoOriginal =
+      productos.find((p) => p.id_producto === producto.id_producto) || producto;
+    const { variantes: variantesProducto, ...restoProducto } = productoOriginal;
+
     setProductoActual({
       ...restoProducto,
-      descripcion: producto.descripcion || "",
+      descripcion: productoOriginal.descripcion || "",
     });
     setVariantes(variantesProducto || []);
     setErroresForm({});
