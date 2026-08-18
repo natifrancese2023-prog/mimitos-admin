@@ -43,7 +43,7 @@ const ESTADO_ICONO = {
 const TRANSICIONES_PERMITIDAS = {
   pendiente: ["confirmado", "entregado", "cancelado"],
   confirmado: ["entregado", "cancelado"],
-  entregado: ["facturado", "cancelado"],
+  entregado: ["cancelado"],
   facturado: [],
   cancelado: [],
 };
@@ -88,6 +88,7 @@ export default function Pedidos() {
   const [modalFacturar, setModalFacturar] = useState(false);
   const [pedidoAFacturar, setPedidoAFacturar] = useState(null);
   const [formaPagoFact, setFormaPagoFact] = useState("");
+  const [montoPagadoFact, setMontoPagadoFact] = useState("");
   const [obsFact, setObsFact] = useState("");
   const [facturando, setFacturando] = useState(false);
   const [errorFact, setErrorFact] = useState("");
@@ -263,6 +264,7 @@ export default function Pedidos() {
   const abrirFacturar = useCallback((pedido) => {
     setPedidoAFacturar(pedido);
     setFormaPagoFact("");
+    setMontoPagadoFact(pedido?.total != null ? String(pedido.total) : "");
     setObsFact("");
     setErrorFact("");
     setExitoFact("");
@@ -273,6 +275,7 @@ export default function Pedidos() {
     setModalFacturar(false);
     setPedidoAFacturar(null);
     setFormaPagoFact("");
+    setMontoPagadoFact("");
     setObsFact("");
     setErrorFact("");
     setExitoFact("");
@@ -280,30 +283,46 @@ export default function Pedidos() {
 
   const handleFacturar = useCallback(async () => {
     setErrorFact("");
+
+    if (!pedidoAFacturar?.id_pedido) {
+      setErrorFact("No se encontró el pedido a cobrar.");
+      return;
+    }
+
     if (!formaPagoFact) {
       setErrorFact("Seleccioná una forma de cobro");
       return;
     }
+
+    const monto = montoPagadoFact === "" ? Number(pedidoAFacturar.total) : Number(montoPagadoFact);
+    const total = Number(pedidoAFacturar.total);
+
+    if (!Number.isFinite(monto) || monto < 0 || monto > total) {
+      setErrorFact("El monto cobrado no puede ser negativo ni mayor al total del pedido.");
+      return;
+    }
+
     setFacturando(true);
     try {
       await axios.post(
-        `${API_URL}/facturas`,
+        `${API_URL}/ventas/directa`,
         {
           id_pedido: pedidoAFacturar.id_pedido,
           forma_pago: formaPagoFact,
+          monto_pagado: monto,
           observaciones: obsFact || null,
         },
         { headers: getAuthHeader() },
       );
-      setExitoFact("Pedido facturado correctamente");
+      setExitoFact("Pedido cobrado y facturado correctamente");
       await cargarDatos();
       setTimeout(() => cerrarFacturar(), 1200);
     } catch (err) {
-      setErrorFact(err.response?.data?.error || "Error al facturar el pedido");
+      setErrorFact(err.response?.data?.error || "Error al cobrar el pedido");
     } finally {
       setFacturando(false);
     }
-  }, [formaPagoFact, obsFact, pedidoAFacturar, cargarDatos, cerrarFacturar]);
+  }, [formaPagoFact, montoPagadoFact, obsFact, pedidoAFacturar, cargarDatos, cerrarFacturar]);
 
   // ============================================================
   // LINEAS DEL NUEVO PEDIDO — con soporte de variantes
@@ -619,7 +638,7 @@ export default function Pedidos() {
                           className="btn-facturar"
                           onClick={() => abrirFacturar(p)}
                         >
-                          🧾 Facturar
+                          💰 Cobrar
                         </button>
                       )}
                     </div>
@@ -679,7 +698,7 @@ export default function Pedidos() {
                 </div>
                 {pedidoDetalle.estado === "entregado" && (
                   <div className="facturar-aviso">
-                    🧾 Este pedido está listo para facturar.
+                    💰 Este pedido está listo para cobrar.
                     <button
                       className="btn-facturar-inline"
                       onClick={() => {
@@ -687,7 +706,7 @@ export default function Pedidos() {
                         abrirFacturar(pedidoDetalle);
                       }}
                     >
-                      Facturar ahora
+                      Cobrar ahora
                     </button>
                   </div>
                 )}
@@ -763,7 +782,7 @@ export default function Pedidos() {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div>
-                <h2>Facturar pedido #{pedidoAFacturar.id_pedido}</h2>
+                <h2>Cobrar pedido #{pedidoAFacturar.id_pedido}</h2>
                 <p className="modal-subtitulo">
                   {pedidoAFacturar.cliente_nombre}{" "}
                   {pedidoAFacturar.cliente_apellido}
@@ -795,12 +814,25 @@ export default function Pedidos() {
                   </div>
                 </div>
                 <div className="field-group">
+                  <label>Monto cobrado *</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={montoPagadoFact}
+                    onChange={(e) => setMontoPagadoFact(e.target.value)}
+                    placeholder={String(pedidoAFacturar.total)}
+                    disabled={facturando}
+                  />
+                </div>
+                <div className="field-group">
                   <label>Observaciones</label>
                   <input
                     type="text"
                     value={obsFact}
                     onChange={(e) => setObsFact(e.target.value)}
                     placeholder="Opcional"
+                    disabled={facturando}
                   />
                 </div>
               </div>
@@ -820,7 +852,7 @@ export default function Pedidos() {
                 onClick={handleFacturar}
                 disabled={facturando}
               >
-                {facturando ? "Facturando..." : "🧾 Confirmar facturación"}
+                {facturando ? "Cobrando..." : "💰 Confirmar cobro"}
               </button>
             </div>
           </div>
