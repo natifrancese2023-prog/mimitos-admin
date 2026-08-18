@@ -1,0 +1,37 @@
+input,
+select,
+textarea{
+
+    width:100%;
+
+    padding:10px 12px;
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-md);
+
+    background:white;
+
+    transition:var(--transition);
+
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+
+    border-color:var(--color-primary);
+
+    box-shadow:0 0 0 3px rgba(15,76,92,.15);
+
+}
+
+label{
+
+    display:block;
+
+    margin-bottom:6px;
+
+    font-weight:600;
+
+}

@@ -1,0 +1,236 @@
+
+.cs-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:1.5rem;
+}
+
+.cs-parametros{
+  display:flex;
+  align-items:flex-end;
+  gap:1rem;
+  flex-wrap:wrap;
+  margin-bottom:1.5rem;
+  padding:1rem;
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+}
+
+.cs-vacio{
+  padding:3rem;
+  text-align:center;
+  color:var(--color-text-secondary);
+}
+
+.cs-tabla-wrapper{
+  overflow-x:auto;
+  margin-bottom:1rem;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+  box-shadow:var(--shadow-sm);
+}
+
+.cs-tabla,
+.cs-tabla-pendientes{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.9rem;
+}
+
+.cs-tabla thead tr,
+.cs-tabla-pendientes thead tr{
+  background:#F9FAFB;
+}
+
+.cs-tabla th,
+.cs-tabla-pendientes th{
+  padding:.85rem 1rem;
+  text-align:left;
+  border-bottom:1px solid var(--color-border);
+  color:var(--color-text-secondary);
+  font-size:.75rem;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  white-space:nowrap;
+}
+
+.cs-tabla td,
+.cs-tabla-pendientes td{
+  padding:.85rem 1rem;
+  border-bottom:1px solid var(--color-border);
+  color:var(--color-text);
+  vertical-align:middle;
+}
+
+.cs-tabla tbody tr:last-child td,
+.cs-tabla-pendientes tbody tr:last-child td{
+  border-bottom:none;
+}
+
+.cs-tabla tbody tr:hover,
+.cs-tabla-pendientes tbody tr:hover{
+  background:#F9FAFB;
+}
+
+.cs-tabla tr.fila-alerta{
+  background:#FFF8E1;
+}
+
+.cs-input-cantidad{
+  width:70px;
+  padding:.45rem .6rem;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);
+  outline:none;
+}
+
+.cs-input-cantidad:focus{
+  border-color:var(--color-primary);
+  box-shadow:0 0 0 3px rgba(15,76,92,.12);
+}
+
+.cs-tabla select{
+  min-width:160px;
+  padding:.45rem .6rem;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);
+  background:var(--color-surface);
+  outline:none;
+}
+
+.cs-tabla select:focus{
+  border-color:var(--color-primary);
+  box-shadow:0 0 0 3px rgba(15,76,92,.12);
+}
+
+.cs-acciones-grilla{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:.75rem;
+  margin:1rem 0;
+}
+
+.cs-buscador-wrapper{
+  position:relative;
+}
+
+.cs-buscador-dropdown{
+  position:absolute;
+  top:100%;
+  left:0;
+  z-index:20;
+  min-width:280px;
+  max-height:300px;
+  overflow-y:auto;
+  padding:.75rem;
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-md);
+  box-shadow:var(--shadow-md);
+}
+
+.cs-buscador-dropdown ul{
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.cs-buscador-dropdown li{
+  padding:.25rem 0;
+}
+
+.cs-buscador-producto{
+  display:block;
+  margin-top:.5rem;
+  font-weight:600;
+  color:var(--color-text);
+}
+
+.cs-buscador-dropdown button{
+  width:100%;
+  padding:.45rem .65rem;
+  text-align:left;
+  background:none;
+  border:none;
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  transition:var(--transition);
+}
+
+.cs-buscador-dropdown button:hover{
+  background:#F9FAFB;
+}
+
+.cs-buscador-cerrar{
+  width:100%;
+  margin-top:.75rem;
+  text-align:center;
+  font-size:.85rem;
+  color:var(--color-text-secondary);
+}
+
+.cs-confirmar{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:1rem;
+}
+
+.cs-pendientes{
+  margin-top:2.5rem;
+  padding-top:1.5rem;
+  border-top:1px solid var(--color-border);
+}
+
+.cs-pendientes h2{
+  margin-bottom:1rem;
+  font-size:1.1rem;
+  font-weight:700;
+  color:var(--color-text);
+}
+
+.cs-pendientes-vacio{
+  color:var(--color-text-secondary);
+}
+
+@media(max-width:768px){
+
+  .cs-page{
+    padding:1rem;
+  }
+
+  .cs-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:1rem;
+  }
+
+  .cs-parametros{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .cs-tabla,
+  .cs-tabla-pendientes{
+    min-width:850px;
+  }
+
+  .cs-buscador-dropdown{
+    min-width:100%;
+  }
+
+  .cs-confirmar{
+    justify-content:stretch;
+  }
+
+  .cs-confirmar .btn-primario{
+    width:100%;
+  }
+
+}

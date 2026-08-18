@@ -1,0 +1,166 @@
+.detalle-page{
+  min-height:100vh;
+  padding:2rem;
+  background:var(--color-bg);
+}
+
+.detalle-header{
+  margin-bottom:1.5rem;
+}
+
+.titulo-detalle h2{
+  margin:0 0 .75rem;
+  color:var(--color-text);
+  font-size:1.75rem;
+  font-weight:700;
+}
+
+.titulo-detalle p{
+  margin:.25rem 0;
+  color:var(--color-text-secondary);
+}
+
+.detalle-resumen{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:1rem;
+  margin-bottom:1.5rem;
+}
+
+.card-resumen,
+.detalle-body{
+  padding:1.25rem;
+  border-radius:var(--radius-lg);
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  box-shadow:var(--shadow-sm);
+}
+
+.card-resumen span{
+  display:block;
+  color:var(--color-text-secondary);
+  font-size:.85rem;
+}
+
+.card-resumen strong{
+  display:block;
+  margin-top:.4rem;
+  color:var(--color-text);
+  font-size:1.45rem;
+  font-weight:700;
+}
+
+.detalle-tabs{
+  display:flex;
+  gap:.5rem;
+  border-bottom:1px solid var(--color-border);
+}
+
+.detalle-tabs button{
+  padding:.75rem 1rem;
+  border:none;
+  background:transparent;
+  color:var(--color-text-secondary);
+  cursor:pointer;
+  font-weight:500;
+  transition:var(--transition);
+}
+
+.detalle-tabs button:hover{
+  color:var(--color-primary);
+}
+
+.detalle-tabs .tab-activa{
+  border-bottom:3px solid var(--color-primary);
+  color:var(--color-primary);
+  font-weight:600;
+}
+
+.detalle-contenido{
+  padding-top:1.25rem;
+}
+
+.detalle-contenido table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.detalle-contenido th,
+.detalle-contenido td{
+  padding:.75rem;
+  border-bottom:1px solid var(--color-border);
+  text-align:left;
+}
+
+.detalle-contenido th{
+  background:#F9FAFB;
+  color:var(--color-text-secondary);
+  font-size:.82rem;
+  font-weight:600;
+  text-transform:uppercase;
+}
+
+.detalle-contenido tbody tr:hover{
+  background:#F9FAFB;
+}
+
+.detalle-vacio,
+.detalle-loading{
+  padding:2rem;
+  text-align:center;
+  color:var(--color-text-secondary);
+}
+
+@media(max-width:640px){
+
+  .detalle-page{
+    padding:1rem;
+  }
+
+  .detalle-tabs{
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
+}
+
+/* ==========================
+   Filtro de estados
+========================== */
+
+.filtro-estado-tabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:16px;
+}
+
+.filtro-estado-tabs button{
+  padding:6px 14px;
+  border:1px solid var(--color-border);
+  border-radius:999px;
+  background:var(--color-surface);
+  cursor:pointer;
+  font-size:.85rem;
+  color:var(--color-text-secondary);
+  transition:var(--transition);
+}
+
+.filtro-estado-tabs button:hover{
+  border-color:var(--color-primary);
+  color:var(--color-primary);
+}
+
+.filtro-estado-tabs button.filtro-activo{
+  background:var(--color-primary);
+  color:#fff;
+  border-color:var(--color-primary);
+}
+
+.fila-inactiva{
+  opacity:.55;
+}
+
+.costo-origen{
+  font-size:.72rem;
+  color:var(--color-text-secondary);
+}

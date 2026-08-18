@@ -1,0 +1,324 @@
+/* LOGIN.CSS */
+
+.login-page{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  min-height:100vh;
+  background:var(--color-bg);
+}
+
+/* ============================================================
+   Branding
+============================================================ */
+
+.login-branding{
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--color-primary);
+}
+
+.branding-content{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  color:#fff;
+}
+
+.logo-icon{
+  display:block;
+  font-size:5rem;
+  margin-bottom:1rem;
+  animation:flotar 3s ease-in-out infinite;
+}
+
+@keyframes flotar{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-12px);}
+}
+
+.brand-name{
+  font-size:3rem;
+  font-weight:700;
+  letter-spacing:-.03em;
+  color:#fff;
+}
+
+.brand-tagline{
+  margin-top:.5rem;
+  font-size:.95rem;
+  font-weight:500;
+  color:rgba(255,255,255,.85);
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+
+/* Decoración */
+
+.deco-circle{
+  position:absolute;
+  border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+
+.circle-1{
+  width:320px;
+  height:320px;
+  top:-120px;
+  left:-120px;
+}
+
+.circle-2{
+  width:220px;
+  height:220px;
+  right:-70px;
+  bottom:-70px;
+}
+
+.circle-3{
+  width:140px;
+  height:140px;
+  top:45%;
+  right:40px;
+}
+
+/* ============================================================
+   Formulario
+============================================================ */
+
+.login-form-side{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:2rem;
+  background:var(--color-bg);
+}
+
+.login-card{
+  width:100%;
+  max-width:420px;
+  padding:2.5rem;
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-md);
+  animation:aparecer .35s ease;
+}
+
+@keyframes aparecer{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.login-header{
+  text-align:center;
+  margin-bottom:2rem;
+}
+
+.login-header h2{
+  margin:0;
+  font-size:1.8rem;
+  font-weight:700;
+  color:var(--color-text);
+}
+
+.login-header p{
+  margin-top:.35rem;
+  font-size:.95rem;
+  color:var(--color-text-secondary);
+}
+
+.login-form{
+  display:flex;
+  flex-direction:column;
+  gap:1.2rem;
+}
+
+.field-group{
+  display:flex;
+  flex-direction:column;
+  gap:.4rem;
+}
+
+.field-group label{
+  font-size:.8rem;
+  font-weight:600;
+  color:var(--color-text);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.field-group input{
+  padding:.85rem 1rem;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-md);
+  background:var(--color-surface);
+  color:var(--color-text);
+  font-size:1rem;
+  outline:none;
+  transition:var(--transition);
+}
+
+.field-group input:focus{
+  border-color:var(--color-primary);
+  box-shadow:0 0 0 3px rgba(15,76,92,.12);
+}
+
+/* ============================================================
+   Mensaje de error
+============================================================ */
+
+.error-msg{
+  background:#FDECEC;
+  border:1px solid #FECACA;
+  color:var(--color-danger);
+  border-radius:var(--radius-md);
+  padding:.75rem 1rem;
+  font-size:.9rem;
+  font-weight:600;
+}
+
+/* ============================================================
+   Botón Login
+============================================================ */
+
+.btn-login{
+  padding:.95rem;
+  background:var(--color-primary);
+  color:#fff;
+  border:none;
+  border-radius:var(--radius-md);
+  font-size:1rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:var(--transition);
+  margin-top:.5rem;
+}
+
+.btn-login:hover:not(:disabled){
+  background:var(--color-primary-hover);
+  transform:translateY(-1px);
+}
+
+.btn-login:active:not(:disabled){
+  transform:translateY(0);
+}
+
+.btn-login:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+}
+
+/* ============================================================
+   Responsive
+============================================================ */
+
+@media(max-width:768px){
+
+  .login-page{
+    grid-template-columns:1fr;
+  }
+
+  .login-branding{
+    min-height:220px;
+  }
+
+  .brand-name{
+    font-size:2.4rem;
+  }
+
+  .circle-1,
+  .circle-2,
+  .circle-3{
+    display:none;
+  }
+
+  .login-form-side{
+    padding:2rem 1rem;
+    align-items:flex-start;
+  }
+
+  .login-card{
+    padding:2rem 1.5rem;
+  }
+
+}
+
+@media(max-width:480px){
+
+  .login-branding{
+    min-height:180px;
+  }
+
+  .logo-icon{
+    font-size:3.5rem;
+  }
+
+  .brand-name{
+    font-size:2rem;
+  }
+
+  .brand-tagline{
+    font-size:.85rem;
+    letter-spacing:.08em;
+  }
+
+  .login-card{
+    padding:1.5rem 1rem;
+  }
+
+  .login-header h2{
+    font-size:1.5rem;
+  }
+
+  .btn-login{
+    font-size:.95rem;
+    padding:.85rem;
+  }
+
+  .field-group input{
+    padding:.8rem .9rem;
+    font-size:.95rem;
+  }
+
+}
+
+/* ============================================================
+   Validaciones
+============================================================ */
+
+.field-group input.input-error{
+  border-color:var(--color-danger);
+  background:#FFF8F8;
+}
+
+.field-group input.input-error:focus{
+  border-color:var(--color-danger);
+  box-shadow:0 0 0 3px rgba(198,40,40,.12);
+}
+
+.campo-error{
+  display:block;
+  margin-top:2px;
+  font-size:.78rem;
+  font-weight:600;
+  color:var(--color-danger);
+}
+.logo-icon{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.logo-icon img{
+    width:90px;
+    height:90px;
+}

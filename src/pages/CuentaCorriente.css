@@ -1,0 +1,82 @@
+.cc-page { padding: 24px; }
+.cc-header { margin-bottom: 20px; }
+
+.cc-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+}
+
+.cc-lista-clientes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cc-cliente-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid #e4e7ec;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cc-cliente-item.cc-cliente-activo {
+  border-color: #1f2937;
+  background: #f2f4f7;
+}
+
+.cc-cliente-saldo {
+  font-weight: 600;
+  color: #b42318;
+}
+
+.cc-vacio {
+  text-align: center;
+  padding: 40px;
+  color: #667085;
+}
+
+.cc-detalle-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.cc-saldo-card {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 16px;
+  background: #fef3f2;
+  border-radius: 8px;
+}
+
+.cc-saldo-card strong {
+  font-size: 1.3rem;
+  color: #b42318;
+}
+
+.cc-tabla-movimientos {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cc-tabla-movimientos th {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 2px solid #e4e7ec;
+  font-size: 0.85rem;
+  color: #475467;
+}
+
+.cc-tabla-movimientos td {
+  padding: 8px;
+  border-bottom: 1px solid #f0f1f3;
+}
+
+.cc-fila-venta td:nth-child(3) { color: #b42318; }
+.cc-fila-pago td:nth-child(3) { color: #067647; }

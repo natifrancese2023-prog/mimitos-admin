@@ -1,0 +1,11 @@
+@import "./theme.css";
+@import "./base.css";
+@import "./utilities.css";
+
+@import "./components/buttons.css";
+@import "./components/forms.css";
+@import "./components/tables.css";
+@import "./components/cards.css";
+@import "./components/badges.css";
+@import "./components/modal.css";
+@import "./components/pagination.css";

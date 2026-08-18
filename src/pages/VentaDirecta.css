@@ -1,0 +1,829 @@
+/* ============================================================
+   VENTA-DIRECTA.CSS
+============================================================ */
+
+/* ============================================================
+   Layout
+============================================================ */
+
+.vd-page{
+  padding:2rem;
+  max-width:1300px;
+  margin:0 auto;
+}
+
+/* ============================================================
+   Estado
+============================================================ */
+
+.vd-estado{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1rem;
+  padding:4rem 2rem;
+  color:var(--color-text-secondary);
+}
+
+.vd-estado span{
+  font-size:2.5rem;
+}
+
+.vd-error button{
+  margin-top:.5rem;
+}
+
+/* ============================================================
+   Encabezado
+============================================================ */
+
+.vd-header{
+  margin-bottom:1.5rem;
+}
+
+.vd-header h1{
+  margin:0 0 .2rem;
+  font-size:1.6rem;
+  font-weight:700;
+  color:var(--color-text);
+}
+
+.vd-header p{
+  margin:0;
+  font-size:.9rem;
+  color:var(--color-text-secondary);
+}
+
+/* ============================================================
+   Layout principal
+============================================================ */
+
+.vd-layout{
+  display:grid;
+  grid-template-columns:1fr 380px;
+  gap:1.25rem;
+  align-items:start;
+}
+
+/* ============================================================
+   Panel productos
+============================================================ */
+
+.vd-panel-productos{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+  padding:1.25rem;
+}
+
+/* ============================================================
+   Buscador
+============================================================ */
+
+.vd-busqueda{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  margin-bottom:1rem;
+  padding:.7rem 1rem;
+  background:#F9FAFB;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  transition:var(--transition);
+}
+
+.vd-busqueda:focus-within{
+  border-color:var(--color-primary);
+  box-shadow:0 0 0 3px rgba(15,76,92,.12);
+}
+
+.vd-busqueda .busqueda-icono{
+  color:var(--color-text-secondary);
+  font-size:1rem;
+}
+
+.vd-busqueda input{
+  flex:1;
+  border:none;
+  outline:none;
+  background:transparent;
+  color:var(--color-text);
+  font-size:.9rem;
+}
+
+.busqueda-limpiar{
+  background:none;
+  border:none;
+  color:var(--color-text-secondary);
+  cursor:pointer;
+  transition:var(--transition);
+}
+
+.busqueda-limpiar:hover{
+  color:var(--color-danger);
+}
+
+/* ============================================================
+   Grid productos
+============================================================ */
+
+.vd-grid-productos{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:.85rem;
+  max-height:70vh;
+  overflow-y:auto;
+  padding-right:4px;
+}
+
+.vd-vacio{
+  grid-column:1/-1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.5rem;
+  padding:3rem 1rem;
+  color:var(--color-text-secondary);
+}
+
+.vd-vacio span{
+  font-size:2rem;
+  color:var(--color-primary);
+}
+
+/* ============================================================
+   Tarjetas producto
+============================================================ */
+
+.vd-card-producto{
+  padding:.9rem;
+  background:#F9FAFB;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-md);
+  transition:var(--transition);
+}
+
+.vd-card-producto:hover{
+  border-color:var(--color-primary);
+  box-shadow:var(--shadow-sm);
+}
+
+.vd-card-nombre{
+  margin-bottom:.6rem;
+  font-size:.92rem;
+  font-weight:600;
+  color:var(--color-text);
+}
+
+.vd-card-agregar{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:.15rem;
+  padding:.6rem .75rem;
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);
+  color:var(--color-primary);
+  font-size:.9rem;
+  font-weight:600;
+  text-align:left;
+  cursor:pointer;
+  transition:var(--transition);
+}
+
+.vd-card-agregar:hover:not(:disabled){
+  border-color:var(--color-primary);
+  background:rgba(15,76,92,.08);
+}
+
+.vd-card-agregar:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  color:var(--color-text-secondary);
+}
+
+.vd-card-agregar--chico{
+  padding:.45rem .65rem;
+  font-size:.84rem;
+}
+
+.vd-card-variantes{
+  display:flex;
+  flex-direction:column;
+  gap:.4rem;
+}
+
+.vd-variante-nombre{
+  font-size:.82rem;
+  font-weight:600;
+  color:var(--color-text);
+}
+
+.vd-card-stock{
+  font-size:.72rem;
+  font-weight:600;
+  color:var(--color-text-secondary);
+}
+/* ============================================================
+   Panel carrito
+============================================================ */
+
+.vd-panel-carrito{
+  position:sticky;
+  top:1rem;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  padding:1.25rem;
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+}
+
+.vd-carrito-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.vd-carrito-header h2{
+  margin:0;
+  font-size:1.05rem;
+  font-weight:700;
+  color:var(--color-text);
+}
+
+.btn-limpiar{
+  background:transparent;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-md);
+  padding:.4rem .8rem;
+  font-size:.8rem;
+  color:var(--color-text-secondary);
+  cursor:pointer;
+  transition:var(--transition);
+}
+
+.btn-limpiar:hover{
+  border-color:var(--color-danger);
+  color:var(--color-danger);
+  background:#FDECEC;
+}
+
+/* ============================================================
+   Carrito vacío
+============================================================ */
+
+.vd-carrito-vacio{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.5rem;
+  padding:2.5rem 1rem;
+  color:var(--color-text-secondary);
+}
+
+.vd-carrito-vacio span{
+  font-size:2rem;
+  color:var(--color-primary);
+}
+
+/* ============================================================
+   Líneas
+============================================================ */
+
+.vd-lineas-carrito{
+  display:flex;
+  flex-direction:column;
+  gap:.6rem;
+  max-height:40vh;
+  overflow-y:auto;
+}
+
+.vd-linea-carrito{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:.5rem;
+  align-items:center;
+  padding:.7rem;
+  background:#F9FAFB;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-md);
+}
+
+.vd-linea-info{
+  display:flex;
+  flex-direction:column;
+  gap:.25rem;
+  min-width:0;
+}
+
+.vd-linea-nombre{
+  font-size:.85rem;
+  font-weight:600;
+  color:var(--color-text);
+}
+
+.vd-linea-precio-wrap{
+  display:flex;
+  align-items:center;
+  gap:.35rem;
+  font-size:.8rem;
+  color:var(--color-text-secondary);
+}
+
+.vd-linea-precio{
+  width:70px;
+  padding:.25rem .45rem;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);
+  background:var(--color-surface);
+  color:var(--color-text);
+  font-size:.8rem;
+  outline:none;
+}
+
+.vd-linea-precio:focus{
+  border-color:var(--color-primary);
+  box-shadow:0 0 0 3px rgba(15,76,92,.12);
+}
+
+.vd-linea-subtotal{
+  font-weight:700;
+  color:var(--color-primary);
+}
+
+/* ============================================================
+   Cantidad
+============================================================ */
+
+.vd-linea-cantidad{
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  font-weight:700;
+}
+
+.vd-linea-cantidad button{
+  width:24px;
+  height:24px;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);
+  background:var(--color-surface);
+  cursor:pointer;
+  transition:var(--transition);
+}
+
+.vd-linea-cantidad button:hover{
+  border-color:var(--color-primary);
+  color:var(--color-primary);
+}
+
+.btn-eliminar-linea{
+  background:none;
+  border:none;
+  color:var(--color-danger);
+  cursor:pointer;
+  font-size:.9rem;
+}
+
+/* ============================================================
+   Footer
+============================================================ */
+
+.vd-carrito-footer{
+  display:flex;
+  flex-direction:column;
+  gap:.85rem;
+  padding-top:1rem;
+  border-top:1px solid var(--color-border);
+}
+
+.field-group{
+  display:flex;
+  flex-direction:column;
+  gap:.3rem;
+}
+
+.field-group label{
+  font-size:.75rem;
+  font-weight:600;
+  color:var(--color-text-secondary);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.field-group input,
+.field-group select{
+  padding:.6rem .8rem;
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);
+  background:var(--color-surface);
+  color:var(--color-text);
+  font-size:.88rem;
+  outline:none;
+  transition:var(--transition);
+}
+
+.field-group input:focus,
+.field-group select:focus{
+  border-color:var(--color-primary);
+  box-shadow:0 0 0 3px rgba(15,76,92,.12);
+}
+
+.vd-total{
+  text-align:right;
+  color:var(--color-text);
+  font-size:1rem;
+}
+
+.vd-total strong{
+  color:var(--color-primary);
+  font-size:1.3rem;
+}
+
+.btn-primario{
+  width:100%;
+  padding:.75rem 1.2rem;
+  background:var(--color-primary);
+  color:#fff;
+  border:none;
+  border-radius:var(--radius-md);
+  font-size:.95rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:var(--transition);
+}
+
+.btn-primario:hover{
+  background:var(--color-primary-hover);
+}
+
+.btn-primario:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.vd-btn-confirmar{
+  width:100%;
+}
+/* ============================================================
+   Alertas
+============================================================ */
+
+.alerta-exito{
+  padding:.7rem .9rem;
+  background:#E8F5E9;
+  color:var(--color-success);
+  border-radius:var(--radius-md);
+  font-size:.85rem;
+  font-weight:600;
+}
+
+.alerta-error{
+  padding:.7rem .9rem;
+  background:#FDECEC;
+  color:var(--color-danger);
+  border-radius:var(--radius-md);
+  font-size:.85rem;
+  font-weight:600;
+}
+
+/* ============================================================
+   Spinner
+============================================================ */
+
+.spinner{
+  width:36px;
+  height:36px;
+  border:3px solid var(--color-border);
+  border-top-color:var(--color-primary);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* ============================================================
+   Responsive
+============================================================ */
+
+@media(max-width:1024px){
+
+  .vd-layout{
+    grid-template-columns:1fr;
+  }
+
+  .vd-panel-carrito{
+    position:static;
+  }
+
+}
+
+@media(max-width:768px){
+
+  .vd-page{
+    padding:1rem;
+  }
+
+  .vd-grid-productos{
+    grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    max-height:50vh;
+  }
+
+  .vd-panel-productos,
+  .vd-panel-carrito{
+    padding:1rem;
+  }
+
+  .vd-linea-carrito{
+    grid-template-columns:1fr;
+    gap:.75rem;
+  }
+
+  .vd-linea-cantidad{
+    justify-content:flex-start;
+  }
+
+  .vd-total{
+    text-align:left;
+  }
+
+}
+
+@media(max-width:480px){
+
+  .vd-header h1{
+    font-size:1.3rem;
+  }
+
+  .vd-card-producto{
+    padding:.75rem;
+  }
+
+  .vd-card-agregar{
+    font-size:.85rem;
+  }
+
+  .btn-primario{
+    font-size:.9rem;
+    padding:.7rem 1rem;
+  }
+
+  .vd-grid-productos{
+    grid-template-columns:1fr;
+  }
+
+}
+/* Agregar a VentaDirecta.css */
+
+.vd-cliente-selector {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e4e7ec;
+  position: relative;
+}
+
+.vd-cliente-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.vd-cliente-toggle button {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.vd-cliente-toggle button.vd-toggle-activo {
+  background: #1f2937;
+  color: #fff;
+  border-color: #1f2937;
+}
+
+.vd-cliente-elegido {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  background: #f2f4f7;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.vd-cliente-elegido button {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: #1f6feb;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.vd-cliente-buscador {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: #fff;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-top: 4px;
+}
+
+.vd-cliente-buscador input {
+  width: 100%;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+}
+
+.vd-cliente-buscador ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.vd-cliente-buscador button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.vd-cliente-buscador button:hover {
+  background: #f2f4f7;
+}
+
+.vd-cliente-sin-resultados {
+  padding: 8px;
+  color: #98a2b3;
+  font-size: 0.85rem;
+}
+
+.vd-cliente-cerrar {
+  width: 100%;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #667085;
+  margin-top: 4px;
+}
+
+.vd-cobro-selector {
+  margin-top: 10px;
+}
+
+.vd-entrega {
+  margin-top: 10px;
+}
+
+.vd-entrega-resto {
+  display: block;
+  font-size: 0.8rem;
+  color: #667085;
+  margin-top: 4px;
+}
+/* Agregar a VentaDirecta.css */
+
+.vd-cliente-selector {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e4e7ec;
+  position: relative;
+}
+
+.vd-cliente-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.vd-cliente-toggle button {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.vd-cliente-toggle button.vd-toggle-activo {
+  background: #1f2937;
+  color: #fff;
+  border-color: #1f2937;
+}
+
+.vd-cliente-elegido {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  background: #f2f4f7;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.vd-cliente-elegido button {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: #1f6feb;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.vd-cliente-buscador {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: #fff;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-top: 4px;
+}
+
+.vd-cliente-buscador input {
+  width: 100%;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+}
+
+.vd-cliente-buscador ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.vd-cliente-buscador button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.vd-cliente-buscador button:hover {
+  background: #f2f4f7;
+}
+
+.vd-cliente-sin-resultados {
+  padding: 8px;
+  color: #98a2b3;
+  font-size: 0.85rem;
+}
+
+.vd-cliente-cerrar {
+  width: 100%;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #667085;
+  margin-top: 4px;
+}
+
+.vd-cobro-selector {
+  margin-top: 10px;
+}
+
+.vd-entrega {
+  margin-top: 10px;
+}
+
+.vd-entrega-resto {
+  display: block;
+  font-size: 0.8rem;
+  color: #667085;
+  margin-top: 4px;
+}

@@ -1,0 +1,17 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+
+<line x1="25" y1="20" x2="60" y2="95"
+stroke="#0F4C5C"
+stroke-width="8"
+stroke-linecap="round"/>
+
+<line x1="95" y1="20" x2="60" y2="95"
+stroke="#0F4C5C"
+stroke-width="8"
+stroke-linecap="round"/>
+
+<circle cx="25" cy="20" r="9" fill="#0F4C5C"/>
+<circle cx="95" cy="20" r="9" fill="#0F4C5C"/>
+<circle cx="60" cy="95" r="9" fill="#0F4C5C"/>
+
+</svg>

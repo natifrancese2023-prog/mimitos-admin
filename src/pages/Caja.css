@@ -1,0 +1,105 @@
+.caja-page { padding: 24px; }
+
+.caja-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.caja-header-acciones {
+  display: flex;
+  gap: 10px;
+}
+
+.caja-vacio {
+  text-align: center;
+  padding: 60px 20px;
+  color: #667085;
+}
+
+.caja-vacio h2 { color: #1f2937; margin: 12px 0 6px; }
+
+.caja-resumen-efectivo {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.caja-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.caja-card span { font-size: 0.8rem; color: #667085; }
+.caja-card strong { font-size: 1.15rem; }
+
+.caja-card-destacada {
+  background: #eef4ff;
+}
+
+.caja-verde { color: #067647; }
+.caja-rojo { color: #b42318; }
+
+.caja-otras-formas {
+  margin-bottom: 24px;
+}
+
+.caja-otras-formas h3 {
+  font-size: 0.95rem;
+  color: #475467;
+  margin-bottom: 8px;
+}
+
+.caja-otras-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.caja-otra-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #f9fafb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.caja-movs-titulo {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.caja-sin-movs { color: #667085; }
+
+.caja-tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.caja-tabla th {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 2px solid #e4e7ec;
+  font-size: 0.85rem;
+  color: #475467;
+}
+
+.caja-tabla td {
+  padding: 8px;
+  border-bottom: 1px solid #f0f1f3;
+}
+
+.caja-fila-ingreso td:nth-child(4) { color: #067647; }
+.caja-fila-egreso td:nth-child(4) { color: #b42318; }
+
+.caja-resultado-cierre p {
+  margin: 6px 0;
+  font-size: 1rem;
+}

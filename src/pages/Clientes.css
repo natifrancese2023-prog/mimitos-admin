@@ -1,0 +1,503 @@
+/* ============================================================
+   CLIENTES.CSS
+   ERP Design System
+   ============================================================ */
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+
+.clientes-page{
+    max-width:1200px;
+    margin:0 auto;
+    padding:24px;
+}
+
+@media (max-width:768px){
+
+    .clientes-page{
+        padding:16px;
+    }
+
+}
+
+@media (max-width:480px){
+
+    .clientes-page{
+        padding:12px;
+    }
+
+}
+
+/* ============================================================
+   ESTADOS
+   ============================================================ */
+
+.cli-estado{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    gap:16px;
+
+    padding:64px 24px;
+
+    color:var(--color-text-secondary);
+
+}
+
+.cli-estado span{
+
+    font-size:2.5rem;
+
+}
+
+.cli-error button{
+
+    margin-top:8px;
+
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.cli-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.cli-header h1{
+
+    margin:0;
+
+    font-size:1.8rem;
+
+    font-weight:700;
+
+    color:var(--color-text);
+
+}
+
+.cli-header p{
+
+    margin-top:4px;
+
+    color:var(--color-text-secondary);
+
+    font-size:.95rem;
+
+}
+
+@media(max-width:768px){
+
+    .cli-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:16px;
+
+    }
+
+    .cli-header h1{
+
+        font-size:1.5rem;
+
+    }
+
+}
+
+/* ============================================================
+   BUSCADOR
+   ============================================================ */
+
+.cli-busqueda{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:12px;
+
+    padding:12px 16px;
+
+    background:var(--color-surface);
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-md);
+
+    box-shadow:var(--shadow-sm);
+
+    transition:var(--transition);
+
+}
+
+.cli-busqueda:focus-within{
+
+    border-color:var(--color-primary);
+
+    box-shadow:0 0 0 3px rgba(15,76,92,.12);
+
+}
+
+.busqueda-icono{
+
+    color:var(--color-text-secondary);
+
+    font-size:1rem;
+
+}
+
+.cli-busqueda input{
+
+    flex:1;
+
+    border:none;
+
+    background:transparent;
+
+    outline:none;
+
+    color:var(--color-text);
+
+    font-size:.95rem;
+
+}
+
+.busqueda-limpiar{
+
+    border:none;
+
+    background:transparent;
+
+    color:var(--color-text-secondary);
+
+    cursor:pointer;
+
+    padding:4px;
+
+    border-radius:var(--radius-sm);
+
+    transition:var(--transition);
+
+}
+
+.busqueda-limpiar:hover{
+
+    color:var(--color-danger);
+
+    background:#FEF2F2;
+
+}
+
+.cli-resultado{
+
+    margin-bottom:16px;
+
+    font-size:.875rem;
+
+    color:var(--color-text-secondary);
+
+}
+/* ============================================================
+   TABLA
+   ============================================================ */
+
+.cli-tabla-wrapper{
+
+    background:var(--color-surface);
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-lg);
+
+    overflow:hidden;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+.cli-tabla{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    font-size:.92rem;
+
+}
+
+.cli-tabla thead{
+
+    background:#F9FAFB;
+
+}
+
+.cli-tabla th{
+
+    padding:14px 16px;
+
+    text-align:left;
+
+    font-size:.75rem;
+
+    font-weight:600;
+
+    text-transform:uppercase;
+
+    letter-spacing:.05em;
+
+    color:var(--color-text-secondary);
+
+    border-bottom:1px solid var(--color-border);
+
+}
+
+.cli-tabla td{
+
+    padding:14px 16px;
+
+    color:var(--color-text);
+
+    border-bottom:1px solid var(--color-border);
+
+    vertical-align:middle;
+
+}
+
+.cli-tabla tbody tr{
+
+    transition:var(--transition);
+
+}
+
+.cli-tabla tbody tr:hover{
+
+    background:#F9FAFB;
+
+}
+
+.cli-tabla tbody tr:last-child td{
+
+    border-bottom:none;
+
+}
+
+/* ============================================================
+   AVATAR
+   ============================================================ */
+
+.cli-avatar-nombre{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+.cli-avatar{
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-shrink:0;
+
+    background:rgba(15,76,92,.10);
+
+    color:var(--color-primary);
+
+    font-size:.9rem;
+
+    font-weight:700;
+
+}
+
+.cli-nombre{
+
+    font-weight:600;
+
+    color:var(--color-text);
+
+}
+
+/* ============================================================
+   ACCIONES
+   ============================================================ */
+
+.acciones{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+}
+
+.btn-ver{
+
+    padding:6px 12px;
+
+    background:#F9FAFB;
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-md);
+
+    color:var(--color-text);
+
+    font-size:.82rem;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.btn-ver:hover{
+
+    background:rgba(15,76,92,.08);
+
+    color:var(--color-primary);
+
+    border-color:var(--color-primary);
+
+}
+
+.btn-editar,
+.btn-eliminar{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:34px;
+
+    height:34px;
+
+    background:#FFFFFF;
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-md);
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.btn-editar{
+
+    color:var(--color-primary);
+
+}
+
+.btn-editar:hover{
+
+    background:rgba(15,76,92,.08);
+
+    border-color:var(--color-primary);
+
+}
+
+.btn-eliminar{
+
+    color:var(--color-danger);
+
+}
+
+.btn-eliminar:hover{
+
+    background:#FEF2F2;
+
+    border-color:var(--color-danger);
+
+}
+
+/* ============================================================
+   VACÍO
+   ============================================================ */
+
+.cli-vacio{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:16px;
+
+    padding:64px 24px;
+
+    background:var(--color-surface);
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-sm);
+
+    color:var(--color-text-secondary);
+
+    text-align:center;
+
+}
+
+.cli-vacio span{
+
+    font-size:2.5rem;
+
+    color:var(--color-primary);
+
+}
+
+.cli-vacio h3{
+
+    color:var(--color-text);
+
+    font-size:1.1rem;
+
+    font-weight:600;
+
+}
+
+.cli-vacio p{
+
+    max-width:420px;
+
+}

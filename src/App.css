@@ -1,0 +1,44 @@
+/* ===========================
+   Responsive - Mobile
+=========================== */
+
+@media (max-width: 768px) {
+
+    body{
+        overflow-x:hidden;
+    }
+
+    #root{
+        min-height:100vh;
+    }
+
+    .table-responsive{
+        width:100%;
+        overflow-x:auto;
+    }
+
+    .table-responsive table{
+        min-width:700px;
+    }
+
+    .sidebar{
+        position:fixed;
+        top:0;
+        left:-100%;
+        width:280px;
+        height:100vh;
+
+        background:var(--color-surface);
+        border-right:1px solid var(--color-border);
+
+        box-shadow:var(--shadow-md);
+
+        transition:left .25s ease;
+        z-index:1100;
+    }
+
+    .sidebar.active{
+        left:0;
+    }
+
+}

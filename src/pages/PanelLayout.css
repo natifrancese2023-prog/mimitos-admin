@@ -1,0 +1,380 @@
+/* ============================================================
+   PANELLAYOUT.CSS
+   ERP Design System
+   ============================================================ */
+
+/* Variables propias del layout */
+:root {
+  --sidebar-width: 260px;
+  --topbar-height: 64px;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+
+.panel-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 100vh;
+  transition: grid-template-columns .25s ease;
+}
+
+.panel-layout.sidebar-closed {
+  grid-template-columns: 0 1fr;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.sidebar {
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+
+  display: flex;
+  flex-direction: column;
+
+  height: 100vh;
+
+  position: sticky;
+  top: 0;
+
+  overflow: hidden;
+
+  width: var(--sidebar-width);
+
+  z-index: 100;
+
+  transition: width .25s ease;
+}
+
+.panel-layout.sidebar-closed .sidebar {
+  width: 0;
+  border-right: none;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 20px;
+
+  border-bottom: 1px solid var(--color-border);
+
+  white-space: nowrap;
+}
+
+.sidebar-logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+
+  color: var(--color-primary);
+}
+
+.sidebar-toggle {
+  background: transparent;
+  border: none;
+
+  cursor: pointer;
+
+  color: var(--color-text-secondary);
+
+  padding: 8px;
+
+  border-radius: var(--radius-sm);
+
+  transition: all .2s ease;
+}
+
+.sidebar-toggle:hover {
+  background: #F9FAFB;
+  color: var(--color-text);
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+
+  padding: 12px 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.nav-label {
+  padding: 8px 20px;
+
+  font-size: .75rem;
+
+  text-transform: uppercase;
+
+  letter-spacing: .08em;
+
+  font-weight: 600;
+
+  color: var(--color-text-secondary);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 20px;
+
+  color: var(--color-text-secondary);
+
+  text-decoration: none;
+
+  font-size: .95rem;
+
+  font-weight: 500;
+
+  border-left: 3px solid transparent;
+
+  transition: all .2s ease;
+}
+
+.nav-item:hover {
+  background: #F9FAFB;
+  color: var(--color-text);
+}
+
+.nav-item.active {
+  background: rgba(15, 76, 92, .08);
+
+  color: var(--color-primary);
+
+  border-left-color: var(--color-primary);
+
+  font-weight: 600;
+}
+
+.nav-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.sidebar-footer {
+  margin-top: auto;
+
+  padding: 16px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+
+  padding: 10px 14px;
+
+  background: transparent;
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius-md);
+
+  color: var(--color-text-secondary);
+
+  font-size: .9rem;
+
+  font-family: inherit;
+
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: all .2s ease;
+}
+
+.btn-logout:hover {
+  background: #FEF2F2;
+
+  border-color: #FECACA;
+
+  color: var(--color-danger);
+}
+
+/* ============================================================
+   MAIN
+   ============================================================ */
+
+.panel-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  height: var(--topbar-height);
+
+  background: var(--color-surface);
+
+  border-bottom: 1px solid var(--color-border);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 24px;
+}
+
+.btn-menu {
+  background: transparent;
+
+  border: none;
+
+  color: var(--color-text);
+
+  font-size: 1.2rem;
+
+  cursor: pointer;
+
+  padding: 8px;
+
+  border-radius: var(--radius-sm);
+
+  transition: all .2s ease;
+}
+
+.btn-menu:hover {
+  background: #F9FAFB;
+}
+
+.topbar-saludo {
+  color: var(--color-text-secondary);
+
+  font-size: .9rem;
+
+  font-weight: 500;
+}
+
+.panel-content {
+  flex: 1;
+
+  padding: 24px;
+
+  background: var(--color-bg);
+
+  overflow-y: auto;
+}
+
+/* ============================================================
+   OVERLAY
+   ============================================================ */
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .panel-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .sidebar {
+
+    position: fixed;
+
+    top: 0;
+    left: -100%;
+
+    width: var(--sidebar-width);
+
+    height: 100vh;
+
+    box-shadow: none;
+
+    transition:
+      left .25s ease,
+      box-shadow .25s ease;
+
+    z-index: 1100;
+  }
+
+  .panel-layout.sidebar-open .sidebar {
+    left: 0;
+    box-shadow: var(--shadow-md);
+  }
+
+  .panel-main {
+    width: 100%;
+  }
+
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .topbar-saludo {
+    font-size: .85rem;
+  }
+
+  .panel-content {
+    padding: 16px;
+  }
+
+  .sidebar-overlay {
+    display: block;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(15, 23, 42, .35);
+
+    z-index: 1099;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .topbar {
+    height: 56px;
+  }
+
+  .panel-content {
+    padding: 12px;
+  }
+
+}

@@ -1,0 +1,261 @@
+/* ===========================================================
+   DETALLE (ESTILO COMPARTIDO)
+=========================================================== */
+
+.detalle-page{
+  padding:25px;
+  min-height:100vh;
+  background:var(--color-bg);
+}
+
+/* ===========================================================
+   HEADER
+=========================================================== */
+
+.detalle-header{
+  margin-bottom:25px;
+}
+
+.titulo-detalle{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.titulo-detalle h2{
+  margin:0;
+  color:var(--color-text);
+  font-size:1.9rem;
+  font-weight:700;
+}
+
+.titulo-detalle p{
+  margin:0;
+  color:var(--color-text-secondary);
+  font-size:.95rem;
+}
+
+.titulo-detalle strong{
+  color:var(--color-text);
+}
+
+/* ===========================================================
+   TARJETAS RESUMEN
+=========================================================== */
+
+.detalle-resumen{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+  margin-bottom:25px;
+}
+
+.card-resumen{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:20px;
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+  transition:var(--transition);
+}
+
+.card-resumen:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-md);
+}
+
+.card-resumen span{
+  color:var(--color-text-secondary);
+  font-size:.9rem;
+}
+
+.card-resumen strong{
+  color:var(--color-text);
+  font-size:1.7rem;
+  font-weight:700;
+}
+
+/* ===========================================================
+   CONTENEDOR
+=========================================================== */
+
+.detalle-body{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+}
+
+/* ===========================================================
+   TABS
+=========================================================== */
+
+.detalle-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  border-bottom:1px solid var(--color-border);
+  background:#F9FAFB;
+}
+
+.detalle-tabs button{
+  border:none;
+  background:transparent;
+  padding:15px 24px;
+  cursor:pointer;
+  font-size:.95rem;
+  font-weight:600;
+  color:var(--color-text-secondary);
+  transition:var(--transition);
+}
+
+.detalle-tabs button:hover{
+  background:rgba(15,76,92,.08);
+  color:var(--color-primary);
+}
+
+.tab-activa{
+  background:var(--color-surface)!important;
+  color:var(--color-primary)!important;
+  border-bottom:3px solid var(--color-primary)!important;
+}
+
+/* ===========================================================
+   CONTENIDO
+=========================================================== */
+
+.detalle-contenido{
+  padding:25px;
+  min-height:550px;
+}
+
+/* ===========================================================
+   TABLAS
+=========================================================== */
+
+.detalle-contenido table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.detalle-contenido th{
+  background:#F9FAFB;
+  padding:12px;
+  text-align:left;
+  border-bottom:1px solid var(--color-border);
+  font-weight:600;
+  color:var(--color-text-secondary);
+  text-transform:uppercase;
+  font-size:.8rem;
+}
+
+.detalle-contenido td{
+  padding:12px;
+  border-bottom:1px solid var(--color-border);
+  color:var(--color-text);
+}
+
+.detalle-contenido tr:hover{
+  background:#F9FAFB;
+}
+
+/* ===========================================================
+   BADGES
+=========================================================== */
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:.82rem;
+  font-weight:600;
+}
+
+.badge-success{
+  background:#E8F5E9;
+  color:var(--color-success);
+}
+
+.badge-warning{
+  background:#FFF8E1;
+  color:var(--color-warning);
+}
+
+.badge-danger{
+  background:#FDECEC;
+  color:var(--color-danger);
+}
+
+/* ===========================================================
+   BOTONES TABLA
+=========================================================== */
+
+.acciones{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+/* ===========================================================
+   ESTADOS
+=========================================================== */
+
+.detalle-vacio{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:15px;
+  padding:70px;
+  color:var(--color-text-secondary);
+}
+
+.detalle-vacio span{
+  font-size:3rem;
+  color:var(--color-primary);
+}
+
+.detalle-loading{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:250px;
+}
+
+/* ===========================================================
+   RESPONSIVE
+=========================================================== */
+
+@media(max-width:900px){
+
+  .detalle-tabs{
+    flex-direction:column;
+  }
+
+  .detalle-tabs button{
+    width:100%;
+    text-align:left;
+  }
+
+}
+
+@media(max-width:700px){
+
+  .detalle-page{
+    padding:15px;
+  }
+
+  .titulo-detalle h2{
+    font-size:1.5rem;
+  }
+
+  .detalle-contenido{
+    padding:18px;
+  }
+
+}

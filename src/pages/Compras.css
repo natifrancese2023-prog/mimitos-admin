@@ -1,0 +1,598 @@
+/* ============================================================
+   COMPRAS.CSS
+   ERP Design System
+   ============================================================ */
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+
+.compras-page{
+    max-width:1200px;
+    margin:0 auto;
+    padding:24px;
+}
+
+@media (max-width:768px){
+
+    .compras-page{
+        padding:16px;
+    }
+
+}
+
+@media (max-width:480px){
+
+    .compras-page{
+        padding:12px;
+    }
+
+}
+
+/* ============================================================
+   ESTADOS
+   ============================================================ */
+
+.comp-estado{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    gap:16px;
+
+    padding:64px 24px;
+
+    color:var(--color-text-secondary);
+
+}
+
+.comp-estado span{
+
+    font-size:2.5rem;
+
+}
+
+.comp-error button{
+
+    margin-top:8px;
+
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.comp-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.comp-header h1{
+
+    margin:0;
+
+    font-size:1.8rem;
+
+    font-weight:700;
+
+    color:var(--color-text);
+
+}
+
+.comp-header p{
+
+    margin-top:4px;
+
+    font-size:.95rem;
+
+    color:var(--color-text-secondary);
+
+}
+
+@media(max-width:768px){
+
+    .comp-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:16px;
+
+    }
+
+    .comp-header h1{
+
+        font-size:1.5rem;
+
+    }
+
+}
+
+/* ============================================================
+   RESUMEN
+   ============================================================ */
+
+.comp-resumen{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:16px;
+
+    margin-bottom:24px;
+
+}
+
+.resumen-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    padding:20px;
+
+    background:var(--color-surface);
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+.resumen-icono{
+
+    font-size:1.4rem;
+
+    color:var(--color-primary);
+
+}
+
+.resumen-count{
+
+    font-size:1.6rem;
+
+    font-weight:700;
+
+    color:var(--color-primary);
+
+}
+
+.resumen-label{
+
+    font-size:.8rem;
+
+    color:var(--color-text-secondary);
+
+    text-align:center;
+
+}
+
+@media(max-width:768px){
+
+    .comp-resumen{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:480px){
+
+    .comp-resumen{
+
+        gap:12px;
+
+    }
+
+}
+
+/* ============================================================
+   FILTROS
+   ============================================================ */
+
+.comp-filtros{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    align-items:flex-end;
+
+    gap:16px;
+
+    padding:20px;
+
+    margin-bottom:16px;
+
+    background:var(--color-surface);
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+.filtro-grupo{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+    min-width:180px;
+
+}
+
+.filtro-grupo label{
+
+    font-size:.75rem;
+
+    font-weight:600;
+
+    color:var(--color-text-secondary);
+
+    text-transform:uppercase;
+
+    letter-spacing:.05em;
+
+}
+
+.filtro-grupo select{
+
+    width:100%;
+
+}
+
+.btn-limpiar{
+
+    align-self:flex-end;
+
+}
+
+.comp-resultado{
+
+    margin-bottom:16px;
+
+    font-size:.875rem;
+
+    color:var(--color-text-secondary);
+
+}
+
+@media(max-width:768px){
+
+    .comp-filtros{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+    .filtro-grupo{
+
+        width:100%;
+
+        min-width:unset;
+
+    }
+
+    .btn-limpiar{
+
+        width:100%;
+
+        align-self:stretch;
+
+    }
+
+}
+/* ============================================================
+   TABLA
+   ============================================================ */
+
+.comp-tabla-wrapper{
+
+    background:var(--color-surface);
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-lg);
+
+    overflow:hidden;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+.comp-tabla{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    font-size:.92rem;
+
+}
+
+.comp-tabla thead{
+
+    background:#F9FAFB;
+
+}
+
+.comp-tabla th{
+
+    padding:14px 16px;
+
+    text-align:left;
+
+    font-size:.75rem;
+
+    font-weight:600;
+
+    text-transform:uppercase;
+
+    letter-spacing:.05em;
+
+    color:var(--color-text-secondary);
+
+    border-bottom:1px solid var(--color-border);
+
+}
+
+.comp-tabla td{
+
+    padding:14px 16px;
+
+    color:var(--color-text);
+
+    border-bottom:1px solid var(--color-border);
+
+    vertical-align:middle;
+
+}
+
+.comp-tabla tbody tr{
+
+    transition:var(--transition);
+
+}
+
+.comp-tabla tbody tr:hover{
+
+    background:#F9FAFB;
+
+}
+
+.comp-tabla tbody tr:last-child td{
+
+    border-bottom:none;
+
+}
+
+.comp-proveedor{
+
+    font-weight:600;
+
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+
+.badge-pago{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:4px 10px;
+
+    border-radius:999px;
+
+    font-size:.75rem;
+
+    font-weight:600;
+
+}
+
+.pago-ok{
+
+    background:#E8F5E9;
+
+    color:var(--color-success);
+
+}
+
+.pago-pendiente{
+
+    background:#FFF8E1;
+
+    color:var(--color-warning);
+
+}
+
+/* ============================================================
+   ESTADO VACÍO
+   ============================================================ */
+
+.comp-vacio{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:16px;
+
+    padding:64px 24px;
+
+    background:var(--color-surface);
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-sm);
+
+    text-align:center;
+
+    color:var(--color-text-secondary);
+
+}
+
+.comp-vacio span{
+
+    font-size:2.5rem;
+
+    color:var(--color-primary);
+
+}
+
+.comp-vacio h3{
+
+    color:var(--color-text);
+
+    font-weight:600;
+
+}
+
+.comp-vacio p{
+
+    max-width:420px;
+
+}
+
+/* ============================================================
+   ACCIONES
+   ============================================================ */
+
+.acciones{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+}
+
+.btn-ver{
+
+    padding:6px 12px;
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-md);
+
+    background:#FFFFFF;
+
+    color:var(--color-text);
+
+    font-size:.82rem;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.btn-ver:hover{
+
+    background:rgba(15,76,92,.08);
+
+    border-color:var(--color-primary);
+
+    color:var(--color-primary);
+
+}
+
+.btn-limpiar{
+
+    padding:10px 16px;
+
+    background:#FFFFFF;
+
+    border:1px solid var(--color-border);
+
+    border-radius:var(--radius-md);
+
+    color:var(--color-text-secondary);
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+}
+
+.btn-limpiar:hover{
+
+    border-color:var(--color-danger);
+
+    color:var(--color-danger);
+
+    background:#FEF2F2;
+
+}
+
+/* ============================================================
+   RESPONSIVE TABLA
+   ============================================================ */
+
+@media(max-width:768px){
+
+    .comp-tabla-wrapper{
+
+        overflow-x:auto;
+
+        -webkit-overflow-scrolling:touch;
+
+    }
+
+    .comp-tabla{
+
+        min-width:560px;
+
+    }
+
+    .acciones{
+
+        flex-wrap:wrap;
+
+        gap:6px;
+
+    }
+
+}
