@@ -2,6 +2,10 @@
 // PEDIDOS.JSX - Gestión completa de pedidos para el dueño
 // ============================================================
 // ACTUALIZACIÓN: soporte para variantes de productos
+// ACTUALIZACIÓN: "Cobrar" ya no abre un modal propio -- navega a
+// VentaDirecta en modo Pedido (recibe id_pedido por location.state).
+// No se agregó lógica de cobro nueva acá: la creó y la sigue teniendo
+// VentaDirecta.jsx / POST /ventas/directa, sin duplicarla.
 // ============================================================
 
 import { useState, useEffect, useCallback, useMemo } from "react";
@@ -48,14 +52,6 @@ const TRANSICIONES_PERMITIDAS = {
   cancelado: [],
 };
 
-const FORMAS_PAGO = ["efectivo", "debito", "credito", "transferencia"];
-const FORMA_PAGO_ICONO = {
-  efectivo: "💵",
-  debito: "💳",
-  credito: "💳",
-  transferencia: "🏦",
-};
-
 // Línea vacía ahora incluye id_variante
 const LINEA_VACIA = { id_producto: "", id_variante: null, cantidad: 1 };
 
@@ -85,15 +81,6 @@ export default function Pedidos() {
   const [errorDetalle, setErrorDetalle] = useState("");
   const [cambiandoEstado, setCambiandoEstado] = useState(false);
 
-  const [modalFacturar, setModalFacturar] = useState(false);
-  const [pedidoAFacturar, setPedidoAFacturar] = useState(null);
-  const [formaPagoFact, setFormaPagoFact] = useState("");
-  const [montoPagadoFact, setMontoPagadoFact] = useState("");
-  const [obsFact, setObsFact] = useState("");
-  const [facturando, setFacturando] = useState(false);
-  const [errorFact, setErrorFact] = useState("");
-  const [exitoFact, setExitoFact] = useState("");
-
   const [modalCrear, setModalCrear] = useState(false);
   const [idClienteNuevo, setIdClienteNuevo] = useState("");
   const [lineas, setLineas] = useState([{ ...LINEA_VACIA }]);
@@ -103,9 +90,6 @@ export default function Pedidos() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ============================================================
-  // CARGA DE DATOS
-  // ============================================================
   const cargarDatos = useCallback(async () => {
     setCargando(true);
     setError("");
@@ -139,11 +123,7 @@ export default function Pedidos() {
   useEffect(() => {
     cargarDatos();
   }, [cargarDatos]);
-  
 
-  // ============================================================
-  // FILTROS — useMemo para evitar recálculo en cada render
-  // ============================================================
   const pedidosFiltrados = useMemo(
     () =>
       pedidos.filter((p) => {
@@ -173,9 +153,6 @@ export default function Pedidos() {
     setFiltroFechaHasta("");
   }, []);
 
-  // ============================================================
-  // DETALLE
-  // ============================================================
   const abrirDetalle = useCallback(async (pedido) => {
     setPedidoDetalle(pedido);
     setCargandoDetalle(true);
@@ -196,32 +173,19 @@ export default function Pedidos() {
   }, []);
 
   useEffect(() => {
-  if (!location.state?.abrirPedido) return;
+    if (!location.state?.abrirPedido) return;
+    if (pedidos.length === 0) return;
 
-  if (pedidos.length === 0) return;
+    const pedido = pedidos.find(
+      (p) => Number(p.id_pedido) === Number(location.state.abrirPedido)
+    );
 
-  const pedido = pedidos.find(
-    (p) =>
-      Number(p.id_pedido) ===
-      Number(location.state.abrirPedido)
-  );
+    if (!pedido) return;
 
-  if (!pedido) return;
+    abrirDetalle(pedido);
 
-  abrirDetalle(pedido);
-
-  navigate(location.pathname, {
-    replace: true,
-    state: {},
-  });
-
-}, [
-  pedidos,
-  location.state,
-  abrirDetalle,
-  navigate,
-  location.pathname,
-]);
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [pedidos, location.state, abrirDetalle, navigate, location.pathname]);
 
   const cerrarDetalle = useCallback(() => {
     setPedidoDetalle(null);
@@ -259,74 +223,20 @@ export default function Pedidos() {
   );
 
   // ============================================================
-  // FACTURAR
+  // COBRAR — ya no abre un modal propio. Navega a VentaDirecta en
+  // modo Pedido, pasándole id_pedido por location.state. Toda la
+  // lógica de cobro vive en VentaDirecta.jsx / POST /ventas/directa,
+  // no se duplica acá.
   // ============================================================
-  const abrirFacturar = useCallback((pedido) => {
-    setPedidoAFacturar(pedido);
-    setFormaPagoFact("");
-    setMontoPagadoFact(pedido?.total != null ? String(pedido.total) : "");
-    setObsFact("");
-    setErrorFact("");
-    setExitoFact("");
-    setModalFacturar(true);
-  }, []);
+  const irACobrar = useCallback(
+    (pedido) => {
+      navigate("/panel/venta-directa", {
+        state: { idPedidoCobrar: pedido.id_pedido },
+      });
+    },
+    [navigate],
+  );
 
-  const cerrarFacturar = useCallback(() => {
-    setModalFacturar(false);
-    setPedidoAFacturar(null);
-    setFormaPagoFact("");
-    setMontoPagadoFact("");
-    setObsFact("");
-    setErrorFact("");
-    setExitoFact("");
-  }, []);
-
-  const handleFacturar = useCallback(async () => {
-    setErrorFact("");
-
-    if (!pedidoAFacturar?.id_pedido) {
-      setErrorFact("No se encontró el pedido a cobrar.");
-      return;
-    }
-
-    if (!formaPagoFact) {
-      setErrorFact("Seleccioná una forma de cobro");
-      return;
-    }
-
-    const monto = montoPagadoFact === "" ? Number(pedidoAFacturar.total) : Number(montoPagadoFact);
-    const total = Number(pedidoAFacturar.total);
-
-    if (!Number.isFinite(monto) || monto < 0 || monto > total) {
-      setErrorFact("El monto cobrado no puede ser negativo ni mayor al total del pedido.");
-      return;
-    }
-
-    setFacturando(true);
-    try {
-      await axios.post(
-        `${API_URL}/ventas/directa`,
-        {
-          id_pedido: pedidoAFacturar.id_pedido,
-          forma_pago: formaPagoFact,
-          monto_pagado: monto,
-          observaciones: obsFact || null,
-        },
-        { headers: getAuthHeader() },
-      );
-      setExitoFact("Pedido cobrado y facturado correctamente");
-      await cargarDatos();
-      setTimeout(() => cerrarFacturar(), 1200);
-    } catch (err) {
-      setErrorFact(err.response?.data?.error || "Error al cobrar el pedido");
-    } finally {
-      setFacturando(false);
-    }
-  }, [formaPagoFact, montoPagadoFact, obsFact, pedidoAFacturar, cargarDatos, cerrarFacturar]);
-
-  // ============================================================
-  // LINEAS DEL NUEVO PEDIDO — con soporte de variantes
-  // ============================================================
   const agregarLinea = useCallback(() => {
     setLineas((prev) => [...prev, { ...LINEA_VACIA }]);
   }, []);
@@ -337,10 +247,8 @@ export default function Pedidos() {
         prev.map((l, i) => {
           if (i !== idx) return l;
 
-          // Si lo que cambia es la variante (nuestro nuevo selector único)
           if (campo === "id_variante") {
             const varId = valor;
-            // Buscamos la variante en la lista de productos que cargaste del back
             const prodAsociado = productos.find((p) => p.id_variante == varId);
 
             if (prodAsociado) {
@@ -348,19 +256,17 @@ export default function Pedidos() {
                 ...l,
                 id_variante: varId,
                 id_producto: prodAsociado.id_producto,
-                // Guardamos el precio usando el nombre exacto de tu log
                 precio_unitario: parseFloat(prodAsociado.precio_venta_variante),
               };
             }
           }
 
-          // Para cualquier otro campo (como 'cantidad')
           return { ...l, [campo]: valor };
         }),
       );
     },
     [productos],
-  ); // Importante agregar 'productos' a las dependencias del useCallback
+  );
 
   const eliminarLinea = useCallback((idx) => {
     setLineas((prev) => prev.filter((_, i) => i !== idx));
@@ -384,11 +290,7 @@ export default function Pedidos() {
     setExitoCrear("");
   }, []);
 
-  // ============================================================
-  // CREAR PEDIDO
-  // ============================================================
   const handleCrearPedido = useCallback(async () => {
-    console.log("Estado actual de lineas:", lineas);
     setErrorCrear("");
     setExitoCrear("");
 
@@ -407,13 +309,10 @@ export default function Pedidos() {
     }
 
     const productosFormateados = lineas.map((l) => {
-      // Buscamos el objeto original en la lista de productos para asegurar el precio
       const prodOriginal = productos.find(
         (p) => String(p.id_variante) === String(l.id_variante),
       );
 
-      // Usamos el nombre exacto que vimos en tu log: precio_venta_variante
-      // Si no existe, usamos el precio_unitario que ya debería estar en la línea
       const precioFinal = prodOriginal
         ? Number(prodOriginal.precio_venta_variante)
         : Number(l.precio_unitario || 0);
@@ -425,7 +324,7 @@ export default function Pedidos() {
         precio_unitario: precioFinal,
       };
     });
-    // Validación extra: si el precio sigue siendo 0, avisamos
+
     if (productosFormateados.some((p) => p.precio_unitario <= 0)) {
       setErrorCrear(
         "Uno de los productos no tiene precio cargado o no se encontró.",
@@ -448,7 +347,6 @@ export default function Pedidos() {
       await cargarDatos();
       setTimeout(() => cerrarModalCrear(), 1200);
     } catch (err) {
-      // Si el backend sigue chillando por el null, el error vendrá aquí
       const msgError =
         err.response?.data?.error ||
         err.response?.data ||
@@ -460,9 +358,6 @@ export default function Pedidos() {
     }
   }, [idClienteNuevo, lineas, productos, cargarDatos, cerrarModalCrear]);
 
-  // ============================================================
-  // HELPERS
-  // ============================================================
   const formatFecha = useCallback((fecha) => {
     if (!fecha) return "—";
     return new Date(fecha).toLocaleDateString("es-AR", {
@@ -472,10 +367,6 @@ export default function Pedidos() {
     });
   }, []);
 
-
-  // ============================================================
-  // RENDERS DE ESTADO
-  // ============================================================
   if (cargando)
     return (
       <div className="ped-estado">
@@ -492,12 +383,8 @@ export default function Pedidos() {
       </div>
     );
 
-  // ============================================================
-  // RENDER PRINCIPAL
-  // ============================================================
   return (
     <div className="pedidos-page">
-      {/* ── ENCABEZADO ── */}
       <div className="ped-header">
         <div>
           <h1>Pedidos</h1>
@@ -508,7 +395,6 @@ export default function Pedidos() {
         </button>
       </div>
 
-      {/* ── FILTROS ── */}
       <div className="ped-filtros">
         <div className="filtro-grupo">
           <label>Estado</label>
@@ -532,7 +418,6 @@ export default function Pedidos() {
           >
             <option value="">Todos</option>
             {clientes.map((c) => (
-              // Agregamos 'filtro-' para que no choque con el modal de crear
               <option key={`filtro-cli-${c.id_usuario}`} value={c.id_usuario}>
                 {c.nombre} {c.apellido}
               </option>
@@ -568,7 +453,6 @@ export default function Pedidos() {
         </p>
       )}
 
-      {/* ── CARDS RESUMEN ── */}
       <div className="ped-resumen">
         {ESTADOS.map((est) => (
           <div
@@ -587,7 +471,6 @@ export default function Pedidos() {
         ))}
       </div>
 
-      {/* ── TABLA ── */}
       {pedidosFiltrados.length === 0 ? (
         <div className="ped-vacio">
           <span>🛒</span>
@@ -636,7 +519,7 @@ export default function Pedidos() {
                       {p.estado === "entregado" && (
                         <button
                           className="btn-facturar"
-                          onClick={() => abrirFacturar(p)}
+                          onClick={() => irACobrar(p)}
                         >
                           💰 Cobrar
                         </button>
@@ -650,7 +533,6 @@ export default function Pedidos() {
         </div>
       )}
 
-      {/* ── MODAL DETALLE ── */}
       {pedidoDetalle && (
         <div className="modal-overlay" onClick={cerrarDetalle}>
           <div
@@ -703,7 +585,7 @@ export default function Pedidos() {
                       className="btn-facturar-inline"
                       onClick={() => {
                         cerrarDetalle();
-                        abrirFacturar(pedidoDetalle);
+                        irACobrar(pedidoDetalle);
                       }}
                     >
                       Cobrar ahora
@@ -776,90 +658,6 @@ export default function Pedidos() {
         </div>
       )}
 
-      {/* ── MODAL FACTURAR ── */}
-      {modalFacturar && pedidoAFacturar && (
-        <div className="modal-overlay" onClick={cerrarFacturar}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <div>
-                <h2>Cobrar pedido #{pedidoAFacturar.id_pedido}</h2>
-                <p className="modal-subtitulo">
-                  {pedidoAFacturar.cliente_nombre}{" "}
-                  {pedidoAFacturar.cliente_apellido}
-                  {" · "}Total: $
-                  {Number(pedidoAFacturar.total).toLocaleString("es-AR")}
-                </p>
-              </div>
-              <button className="modal-cerrar" onClick={cerrarFacturar}>
-                ✕
-              </button>
-            </div>
-            <div className="modal-body">
-              {exitoFact && <div className="alerta-exito">✅ {exitoFact}</div>}
-              {errorFact && <div className="alerta-error">⚠️ {errorFact}</div>}
-              <div className="form-col">
-                <div className="field-group">
-                  <label>Forma de cobro *</label>
-                  <div className="formas-pago-grid">
-                    {FORMAS_PAGO.map((f) => (
-                      <button
-                        key={f}
-                        className={`btn-forma-pago ${formaPagoFact === f ? "activo" : ""}`}
-                        onClick={() => setFormaPagoFact(f)}
-                      >
-                        <span>{FORMA_PAGO_ICONO[f]}</span>
-                        <span>{f.charAt(0).toUpperCase() + f.slice(1)}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="field-group">
-                  <label>Monto cobrado *</label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={montoPagadoFact}
-                    onChange={(e) => setMontoPagadoFact(e.target.value)}
-                    placeholder={String(pedidoAFacturar.total)}
-                    disabled={facturando}
-                  />
-                </div>
-                <div className="field-group">
-                  <label>Observaciones</label>
-                  <input
-                    type="text"
-                    value={obsFact}
-                    onChange={(e) => setObsFact(e.target.value)}
-                    placeholder="Opcional"
-                    disabled={facturando}
-                  />
-                </div>
-              </div>
-              <div className="factura-resumen">
-                <span>Total a cobrar</span>
-                <strong>
-                  ${Number(pedidoAFacturar.total).toLocaleString("es-AR")}
-                </strong>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="btn-secundario" onClick={cerrarFacturar}>
-                Cancelar
-              </button>
-              <button
-                className="btn-facturar-confirm"
-                onClick={handleFacturar}
-                disabled={facturando}
-              >
-                {facturando ? "Cobrando..." : "💰 Confirmar cobro"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── MODAL CREAR PEDIDO ── */}
       {modalCrear && (
         <div className="modal-overlay" onClick={cerrarModalCrear}>
           <div
@@ -902,15 +700,11 @@ export default function Pedidos() {
               <h3 style={{ marginBottom: "0.75rem" }}>Productos</h3>
               <div className="lineas-productos">
                 {lineas.map((l, idx) => {
-                  // Ya no filtramos variantes aquí porque el select principal
-                  // ahora muestra la combinación de Producto + Variante directamente.
-
                   return (
                     <div
                       className="linea-producto"
                       key={`linea-pedido-row-${idx}`}
                     >
-                      {/* Selector Único de Producto + Variante */}
                       <select
                         value={l.id_variante || ""}
                         onChange={(e) => {
@@ -922,7 +716,6 @@ export default function Pedidos() {
                             return;
                           }
 
-                          // Buscamos la variante elegida en la lista 'productos' que viene del Back
                           const prodAsociado = productos.find(
                             (p) => p.id_variante == varId,
                           );
@@ -959,7 +752,6 @@ export default function Pedidos() {
                         ))}
                       </select>
 
-                      {/* Cantidad */}
                       <input
                         type="number"
                         min="1"
@@ -970,7 +762,6 @@ export default function Pedidos() {
                         placeholder="Cant."
                       />
 
-                      {/* Botón para eliminar línea (solo si hay más de una) */}
                       {lineas.length > 1 && (
                         <button
                           className="btn-eliminar-linea"
@@ -997,7 +788,6 @@ export default function Pedidos() {
                 </div>
               )}
 
-              {/* Agregué el botón de acción por si faltaba en el recorte */}
               <div className="modal-footer" style={{ marginTop: "1.5rem" }}>
                 <button
                   className="btn-confirmar"

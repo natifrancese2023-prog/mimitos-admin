@@ -2,12 +2,28 @@
 // VENTA DIRECTA.JSX - Venta rápida a consumidor final (mostrador)
 // ============================================================
 // ACTUALIZACIÓN (Fase 1): selección de cliente -- Consumidor Final
-// o cliente registrado. Reutiliza GET /usuarios existente (no hay
-// endpoint de búsqueda de clientes separado; se filtra en frontend
-// por rol === 'cliente', mismo patrón que ya usa ModalProductoProveedor
-// con el catálogo de productos).
+// o cliente registrado.
+// ACTUALIZACIÓN (Pedido -> Cobrar): si el componente recibe
+// `idPedidoCobrar` por location.state (lo manda Pedidos.jsx al
+// apretar "Cobrar"), esta pantalla deja de armar una venta nueva y
+// pasa a "modo Pedido": carga el pedido ya entregado en SOLO LECTURA
+// (no se puede tocar productos, precios ni cliente) y muestra
+// únicamente el formulario de cobro. Al confirmar, manda exactamente
+// { id_pedido, forma_pago, monto_pagado, observaciones } a
+// POST /ventas/directa -- el mismo endpoint y la misma lógica de
+// siempre, sin backend nuevo.
+//
+// Si no llega idPedidoCobrar, el componente funciona EXACTAMENTE
+// igual que antes (venta nueva de mostrador), sin ningún cambio de
+// comportamiento.
+//
+// IMPORTANTE: todos los hooks se declaran incondicionalmente, en el
+// mismo orden siempre (Rules of Hooks) -- la bifurcación entre modo
+// Pedido y modo normal ocurre únicamente al final, en el JSX de
+// retorno, nunca en qué hooks se llaman.
 // ============================================================
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./VentaDirecta.css";
 
@@ -21,40 +37,133 @@ const FORMA_PAGO_ICONO = { efectivo: "💵", transferencia: "🏦", debito: "�
 const ID_CONSUMIDOR_FINAL = 2;
 
 export default function VentaDirecta() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const idPedidoCobrar = location.state?.idPedidoCobrar ?? null;
+  const modoPedido = idPedidoCobrar !== null;
+
+  // ── Estado: modo Pedido (Cobrar) ──────────────────────────
+  const [pedidoCobro, setPedidoCobro] = useState(null);
+  const [itemsPedido, setItemsPedido] = useState([]);
+  const [cargandoPedido, setCargandoPedido] = useState(true);
+  const [errorPedido, setErrorPedido] = useState("");
+
+  const [formaPagoPedido, setFormaPagoPedido] = useState("");
+  const [montoPagadoPedido, setMontoPagadoPedido] = useState("");
+  const [obsPedido, setObsPedido] = useState("");
+  const [cobrando, setCobrando] = useState(false);
+  const [errorCobro, setErrorCobro] = useState("");
+  const [exitoCobro, setExitoCobro] = useState("");
+
+  // ── Estado: modo normal (venta nueva de mostrador) ────────
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
-  // Búsqueda de productos
   const [busqueda, setBusqueda] = useState("");
-
-  // Carrito: cada línea = { id_producto, id_variante, nombre, nombre_variante, cantidad, precio_unitario, stockDisponible }
   const [carrito, setCarrito] = useState([]);
 
-  // ── Cliente ──────────────────────────────────────────────
   const [clientes, setClientes] = useState([]);
-  const [modoCliente, setModoCliente] = useState("consumidor_final"); // "consumidor_final" | "registrado"
+  const [modoCliente, setModoCliente] = useState("consumidor_final");
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [busquedaCliente, setBusquedaCliente] = useState("");
   const [buscadorClienteAbierto, setBuscadorClienteAbierto] = useState(false);
 
-  // Datos de la venta
   const [formaPago, setFormaPago] = useState("");
   const [observaciones, setObservaciones] = useState("");
 
-  // FASE 2 -- Cuenta corriente. Solo aplica con cliente registrado
-  // (Consumidor Final siempre es contado, se valida también en el
-  // backend). "entrega" es cuánto paga en el momento; el resto queda
-  // como deuda en cuenta corriente.
-  const [tipoCobro, setTipoCobro] = useState("contado"); // "contado" | "cuenta_corriente"
+  const [tipoCobro, setTipoCobro] = useState("contado");
   const [entrega, setEntrega] = useState("");
 
   const [registrando, setRegistrando] = useState(false);
   const [errorVenta, setErrorVenta] = useState("");
   const [exitoVenta, setExitoVenta] = useState("");
 
-  // ── Carga de productos y clientes ──────────────────────
+  // ── Carga: modo Pedido ─────────────────────────────────────
+  const cargarPedidoCobro = useCallback(async () => {
+    if (!modoPedido) {
+      setCargandoPedido(false);
+      return;
+    }
+    setCargandoPedido(true);
+    setErrorPedido("");
+    try {
+      const [resPedidos, resDetalle] = await Promise.all([
+        axios.get(`${API_URL}/pedidos`, { headers: getAuthHeader() }),
+        axios.get(`${API_URL}/pedidos/${idPedidoCobrar}/detalle`, {
+          headers: getAuthHeader(),
+        }),
+      ]);
+
+      const encontrado = resPedidos.data.find(
+        (p) => Number(p.id_pedido) === Number(idPedidoCobrar)
+      );
+
+      if (!encontrado) {
+        setErrorPedido("No se encontró el pedido.");
+        return;
+      }
+
+      setPedidoCobro(encontrado);
+      setItemsPedido(resDetalle.data);
+      setMontoPagadoPedido(String(encontrado.total));
+    } catch (err) {
+      console.error(err);
+      setErrorPedido("No se pudo cargar el pedido.");
+    } finally {
+      setCargandoPedido(false);
+    }
+  }, [modoPedido, idPedidoCobrar]);
+
+  useEffect(() => {
+    cargarPedidoCobro();
+  }, [cargarPedidoCobro]);
+
+  const handleConfirmarCobro = useCallback(async () => {
+    setErrorCobro("");
+    setExitoCobro("");
+
+    if (!formaPagoPedido) {
+      setErrorCobro("Seleccioná la forma de pago");
+      return;
+    }
+
+    const total = Number(pedidoCobro?.total ?? 0);
+    const monto = montoPagadoPedido === "" ? total : Number(montoPagadoPedido);
+
+    if (!Number.isFinite(monto) || monto < 0 || monto > total) {
+      setErrorCobro("El monto cobrado no puede ser negativo ni mayor al total del pedido.");
+      return;
+    }
+
+    setCobrando(true);
+    try {
+      await axios.post(
+        `${API_URL}/ventas/directa`,
+        {
+          id_pedido: Number(idPedidoCobrar),
+          forma_pago: formaPagoPedido,
+          monto_pagado: monto,
+          observaciones: obsPedido || null,
+        },
+        { headers: getAuthHeader() }
+      );
+      setExitoCobro("Pedido cobrado y facturado correctamente");
+      setTimeout(() => navigate("/panel/pedidos"), 1200);
+    } catch (err) {
+      setErrorCobro(err.response?.data?.error || "Error al cobrar el pedido");
+    } finally {
+      setCobrando(false);
+    }
+  }, [formaPagoPedido, montoPagadoPedido, obsPedido, pedidoCobro, idPedidoCobrar, navigate]);
+
+  // ── Carga: modo normal ─────────────────────────────────────
   const cargarProductos = useCallback(async () => {
+    if (modoPedido) {
+      setCargando(false);
+      return;
+    }
     setCargando(true);
     setError("");
     try {
@@ -63,8 +172,6 @@ export default function VentaDirecta() {
         axios.get(`${API_URL}/usuarios`, { headers: getAuthHeader() }),
       ]);
       setProductos(resProd.data);
-      // GET /usuarios trae todos los roles -- nos quedamos solo con
-      // los clientes, el buscador nunca debería listar dueños.
       setClientes(resUsuarios.data.filter((u) => u.rol === "cliente"));
     } catch (err) {
       setError("No se pudieron cargar los productos.");
@@ -72,18 +179,18 @@ export default function VentaDirecta() {
     } finally {
       setCargando(false);
     }
-  }, []);
+  }, [modoPedido]);
 
-  useEffect(() => { cargarProductos(); }, [cargarProductos]);
+  useEffect(() => {
+    cargarProductos();
+  }, [cargarProductos]);
 
-  // ── Filtro de búsqueda de productos ────────────────────
   const productosFiltrados = useMemo(() => {
     if (!busqueda.trim()) return productos;
     const q = busqueda.trim().toLowerCase();
     return productos.filter((p) => p.nombre.toLowerCase().includes(q));
   }, [productos, busqueda]);
 
-  // ── Filtro de búsqueda de clientes ─────────────────────
   const clientesFiltrados = useMemo(() => {
     if (!busquedaCliente.trim()) return clientes.slice(0, 20);
     const q = busquedaCliente.trim().toLowerCase();
@@ -96,25 +203,22 @@ export default function VentaDirecta() {
       .slice(0, 20);
   }, [clientes, busquedaCliente]);
 
-  const elegirModoConsumidorFinal = () => {
+  const elegirModoConsumidorFinal = useCallback(() => {
     setModoCliente("consumidor_final");
     setClienteSeleccionado(null);
     setBuscadorClienteAbierto(false);
     setBusquedaCliente("");
     setTipoCobro("contado");
     setEntrega("");
-  };
+  }, []);
 
-  const elegirCliente = (cliente) => {
+  const elegirCliente = useCallback((cliente) => {
     setModoCliente("registrado");
     setClienteSeleccionado(cliente);
     setBuscadorClienteAbierto(false);
     setBusquedaCliente("");
-  };
+  }, []);
 
-  // ── Agregar al carrito ──────────────────────────────────
-  // Si el producto tiene variantes, cada variante se agrega por separado.
-  // Si no tiene variantes, se agrega el producto "simple".
   const agregarAlCarrito = useCallback((producto, variante = null) => {
     const idVariante = variante ? variante.id_variante : null;
     const precio = variante ? variante.precio_venta : producto.precio_min;
@@ -127,7 +231,6 @@ export default function VentaDirecta() {
         (l) => l.id_producto === producto.id_producto && l.id_variante === idVariante
       );
       if (idx >= 0) {
-        // Ya está en el carrito: sumar 1 si hay stock suficiente
         const linea = prev[idx];
         if (linea.cantidad + 1 > stockDisponible) return prev;
         const copia = [...prev];
@@ -179,14 +282,12 @@ export default function VentaDirecta() {
     setExitoVenta("");
   }, []);
 
-  // ── Total ────────────────────────────────────────────────
   const total = useMemo(
     () =>
       carrito.reduce((acc, l) => acc + Number(l.cantidad || 0) * Number(l.precio_unitario || 0), 0),
     [carrito]
   );
 
-  // ── Registrar venta ──────────────────────────────────────
   const handleRegistrarVenta = useCallback(async () => {
     setErrorVenta("");
     setExitoVenta("");
@@ -246,7 +347,7 @@ export default function VentaDirecta() {
       setTipoCobro("contado");
       setEntrega("");
       elegirModoConsumidorFinal();
-      await cargarProductos(); // refresca stock
+      await cargarProductos();
     } catch (err) {
       if (err.response?.status === 409) {
         setErrorVenta(err.response.data?.error || "Stock insuficiente");
@@ -256,9 +357,196 @@ export default function VentaDirecta() {
     } finally {
       setRegistrando(false);
     }
-  }, [carrito, formaPago, observaciones, modoCliente, clienteSeleccionado, tipoCobro, entrega, total, cargarProductos]);
+  }, [
+    carrito,
+    formaPago,
+    observaciones,
+    modoCliente,
+    clienteSeleccionado,
+    tipoCobro,
+    entrega,
+    total,
+    cargarProductos,
+    elegirModoConsumidorFinal,
+  ]);
 
-  // ── Renders estado ───────────────────────────────────────
+  // ============================================================
+  // RENDER — acá, y solo acá, se bifurca entre modo Pedido y modo
+  // normal. No hay ningún hook debajo de este punto.
+  // ============================================================
+
+  if (modoPedido) {
+    if (cargandoPedido) {
+      return (
+        <div className="vd-estado">
+          <div className="spinner" />
+          <p>Cargando pedido...</p>
+        </div>
+      );
+    }
+
+    if (errorPedido || !pedidoCobro) {
+      return (
+        <div className="vd-estado vd-error">
+          <span>⚠️</span>
+          <p>{errorPedido || "Pedido no disponible."}</p>
+          <button onClick={() => navigate("/panel/pedidos")}>Volver a Pedidos</button>
+        </div>
+      );
+    }
+
+    const totalPedido = Number(pedidoCobro.total);
+
+    return (
+      <div className="vd-page">
+        <div className="vd-header">
+          <div>
+            <h1>Cobrar pedido #{pedidoCobro.id_pedido}</h1>
+            <p>
+              {pedidoCobro.cliente_nombre} {pedidoCobro.cliente_apellido}
+              {" · "}Estado: {pedidoCobro.estado}
+            </p>
+          </div>
+          <button className="btn-secundario" onClick={() => navigate("/panel/pedidos")}>
+            ← Volver
+          </button>
+        </div>
+
+        <div className="vd-layout">
+          <div className="vd-panel-productos">
+            <h3 style={{ marginBottom: ".75rem" }}>Productos del pedido</h3>
+            {itemsPedido.length === 0 ? (
+              <div className="vd-vacio">
+                <span>📦</span>
+                <p>Este pedido no tiene productos.</p>
+              </div>
+            ) : (
+              <table className="detalle-tabla">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Precio unit.</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {itemsPedido.map((d, i) => (
+                    <tr key={i}>
+                      <td>
+                        {d.nombre_producto}
+                        {d.nombre_variante && (
+                          <span className="badge-variante-detalle">
+                            {d.nombre_variante}
+                          </span>
+                        )}
+                      </td>
+                      <td>
+                        $
+                        {Number(
+                          d.precio_unitario ?? d.subtotal / d.cantidad
+                        ).toLocaleString("es-AR")}
+                      </td>
+                      <td>{d.cantidad}</td>
+                      <td>${Number(d.subtotal).toLocaleString("es-AR")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colSpan={3} className="total-label">
+                      Total
+                    </td>
+                    <td className="total-valor">
+                      ${totalPedido.toLocaleString("es-AR")}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            )}
+          </div>
+
+          <div className="vd-panel-carrito">
+            <div className="vd-carrito-header">
+              <h2>💰 Cobro</h2>
+            </div>
+
+            <div className="vd-cliente-elegido">
+              👤 {pedidoCobro.cliente_nombre} {pedidoCobro.cliente_apellido}
+              <span style={{ marginLeft: "auto", fontSize: ".75rem", color: "#667085" }}>
+                cliente del pedido, no editable
+              </span>
+            </div>
+
+            {exitoCobro && <div className="alerta-exito">✅ {exitoCobro}</div>}
+            {errorCobro && <div className="alerta-error">⚠️ {errorCobro}</div>}
+
+            <div className="vd-carrito-footer">
+              <div className="field-group">
+                <label>Forma de pago *</label>
+                <select
+                  value={formaPagoPedido}
+                  onChange={(e) => setFormaPagoPedido(e.target.value)}
+                  disabled={cobrando}
+                >
+                  <option value="">Seleccioná...</option>
+                  {FORMAS_PAGO.map((f) => (
+                    <option key={f} value={f}>
+                      {FORMA_PAGO_ICONO[f]} {f}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="field-group">
+                <label>Monto cobrado (0 = todo a cuenta corriente)</label>
+                <input
+                  type="number"
+                  min="0"
+                  max={totalPedido}
+                  step="0.01"
+                  value={montoPagadoPedido}
+                  onChange={(e) => setMontoPagadoPedido(e.target.value)}
+                  disabled={cobrando}
+                />
+                {Number(montoPagadoPedido || 0) < totalPedido && (
+                  <span className="vd-entrega-resto">
+                    Queda a cuenta: $
+                    {Math.max(0, totalPedido - Number(montoPagadoPedido || 0)).toLocaleString("es-AR")}
+                  </span>
+                )}
+              </div>
+
+              <div className="field-group">
+                <label>Observaciones</label>
+                <input
+                  type="text"
+                  value={obsPedido}
+                  onChange={(e) => setObsPedido(e.target.value)}
+                  placeholder="Opcional"
+                  disabled={cobrando}
+                />
+              </div>
+
+              <div className="vd-total">
+                Total del pedido: <strong>${totalPedido.toLocaleString("es-AR")}</strong>
+              </div>
+
+              <button
+                className="btn-primario vd-btn-confirmar"
+                onClick={handleConfirmarCobro}
+                disabled={cobrando}
+              >
+                {cobrando ? "Cobrando..." : "💰 Confirmar cobro"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Modo normal: sin cambios de comportamiento ─────────────
   if (cargando)
     return (
       <div className="vd-estado">
@@ -277,7 +565,6 @@ export default function VentaDirecta() {
 
   return (
     <div className="vd-page">
-      {/* ── ENCABEZADO ── */}
       <div className="vd-header">
         <div>
           <h1>Venta directa</h1>
@@ -286,7 +573,6 @@ export default function VentaDirecta() {
       </div>
 
       <div className="vd-layout">
-        {/* ── PANEL IZQUIERDO: catálogo ── */}
         <div className="vd-panel-productos">
           <div className="vd-busqueda">
             <span className="busqueda-icono">🔍</span>
@@ -350,7 +636,6 @@ export default function VentaDirecta() {
           </div>
         </div>
 
-        {/* ── PANEL DERECHO: carrito ── */}
         <div className="vd-panel-carrito">
           <div className="vd-carrito-header">
             <h2>🛒 Carrito</h2>
@@ -359,7 +644,6 @@ export default function VentaDirecta() {
             )}
           </div>
 
-          {/* ── SELECTOR DE CLIENTE ── */}
           <div className="vd-cliente-selector">
             <div className="vd-cliente-toggle">
               <button
