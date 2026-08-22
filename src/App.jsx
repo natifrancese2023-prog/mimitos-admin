@@ -19,6 +19,7 @@ import Gastos from "./pages/Gastos";
 import VentaDirecta from "./pages/VentaDirecta";
 import ProductoDetalle from "./pages/ProductoDetalle";
 import DetalleProveedor from "./pages/DetalleProveedor";
+import Facturas from "./pages/Facturas";
  
  
 function RutaProtegida({ children }) {
