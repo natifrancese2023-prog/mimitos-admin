@@ -133,6 +133,10 @@ export default function PanelLayout() {
             <span className="nav-icon">🗄️</span>
             <span className="nav-text">Caja</span>
           </NavLink>
+           <NavLink to="/panel/facturas" className="nav-item">
+            <span className="nav-icon">📄</span>
+            <span className="nav-text">Facturas</span>
+          </NavLink>
         </nav>
 
         <div className="sidebar-footer">
