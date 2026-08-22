@@ -1,27 +1,4 @@
-// ============================================================
-// VENTA DIRECTA.JSX - Venta rápida a consumidor final (mostrador)
-// ============================================================
-// ACTUALIZACIÓN (Fase 1): selección de cliente -- Consumidor Final
-// o cliente registrado.
-// ACTUALIZACIÓN (Pedido -> Cobrar): si el componente recibe
-// `idPedidoCobrar` por location.state (lo manda Pedidos.jsx al
-// apretar "Cobrar"), esta pantalla deja de armar una venta nueva y
-// pasa a "modo Pedido": carga el pedido ya entregado en SOLO LECTURA
-// (no se puede tocar productos, precios ni cliente) y muestra
-// únicamente el formulario de cobro. Al confirmar, manda exactamente
-// { id_pedido, forma_pago, monto_pagado, observaciones } a
-// POST /ventas/directa -- el mismo endpoint y la misma lógica de
-// siempre, sin backend nuevo.
-//
-// Si no llega idPedidoCobrar, el componente funciona EXACTAMENTE
-// igual que antes (venta nueva de mostrador), sin ningún cambio de
-// comportamiento.
-//
-// IMPORTANTE: todos los hooks se declaran incondicionalmente, en el
-// mismo orden siempre (Rules of Hooks) -- la bifurcación entre modo
-// Pedido y modo normal ocurre únicamente al final, en el JSX de
-// retorno, nunca en qué hooks se llaman.
-// ============================================================
+
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
