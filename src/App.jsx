@@ -69,6 +69,7 @@ export default function App() {
           <Route path="caja" element={<Caja />} />
           <Route path="gastos" element={<Gastos />} />
           <Route path="venta-directa" element={<VentaDirecta />} />
+          <Route path="facturas" element={<Facturas />} />
           
         </Route>
       </Routes>
