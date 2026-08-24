@@ -443,8 +443,7 @@ function imprimirNotaCredito() {
       N° {String(facturaSeleccionada.id_factura).padStart(8, "0")}
     </strong>
   </div>
-</div>
-           
+
 
               {cargandoDetalle ? (
                 <div className="facturas-vacio">Cargando detalle...</div>
@@ -496,6 +495,7 @@ function imprimirNotaCredito() {
               <button className="btn-primario" onClick={() => setFacturaSeleccionada(null)}>Cerrar</button>
             </div>
           </div>
+        </div>
         
       )}
       {notaCreditoSeleccionada && (
@@ -533,7 +533,7 @@ function imprimirNotaCredito() {
       N° {String(notaCreditoSeleccionada.id_nota_credito).padStart(8, "0")}
     </strong>
   </div>
-</div>
+
         {cargandoDetalleNota ? (
           <div className="facturas-vacio">
             Cargando detalle...
@@ -644,7 +644,7 @@ function imprimirNotaCredito() {
         </button>
       </div>
     </div>
- 
+ </div>
 )}
 
       {modalAnular && facturaSeleccionada && (
