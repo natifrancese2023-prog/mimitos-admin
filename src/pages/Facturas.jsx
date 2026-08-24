@@ -444,7 +444,7 @@ function imprimirNotaCredito() {
     </strong>
   </div>
 </div>
-  
+           
 
               {cargandoDetalle ? (
                 <div className="facturas-vacio">Cargando detalle...</div>
@@ -496,7 +496,7 @@ function imprimirNotaCredito() {
               <button className="btn-primario" onClick={() => setFacturaSeleccionada(null)}>Cerrar</button>
             </div>
           </div>
-        </div>
+        
       )}
       {notaCreditoSeleccionada && (
   <div
@@ -644,7 +644,7 @@ function imprimirNotaCredito() {
         </button>
       </div>
     </div>
-  </div>
+ 
 )}
 
       {modalAnular && facturaSeleccionada && (
