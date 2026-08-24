@@ -595,7 +595,7 @@ function imprimirNotaCredito() {
 
               <tbody>
                 {(notaCreditoSeleccionada.detalle || []).map((d) => (
-                  <tr key={d.id_nota_credito_detalle}>
+                  <tr key={d.id_detalle}>
                     <td>{d.nombre_producto}</td>
                     <td>{d.nombre_variante || '—'}</td>
                     <td>{d.cantidad}</td>
