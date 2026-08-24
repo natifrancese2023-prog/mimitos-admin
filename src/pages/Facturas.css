@@ -123,3 +123,31 @@
     white-space: nowrap;
   }
 }
+@media print {
+  .documento-titulo {
+    display: flex !important;
+    visibility: visible !important;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #222;
+  }
+
+  .documento-titulo h1,
+  .documento-titulo strong {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .documento-titulo h1 {
+    margin: 0 !important;
+    font-size: 24px !important;
+    font-weight: 900 !important;
+  }
+
+  .documento-titulo strong {
+    font-size: 14px !important;
+  }
+}
