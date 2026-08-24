@@ -50,3 +50,76 @@
   .factura-imprimible { position:absolute; left:0; top:0; width:100%; }
   .no-print { display:none !important; }
 }
+.facturacion-tabs {
+  display: flex;
+  gap: .35rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--borde,#EDE8DF);
+}
+
+.facturacion-tabs button {
+  border: 0;
+  background: transparent;
+  padding: .75rem 1rem;
+  font: inherit;
+  font-weight: 800;
+  color: var(--texto-suave,#9A8A7A);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.facturacion-tabs button:hover {
+  color: #333;
+}
+
+.facturacion-tabs button.activa {
+  color: #E8835A;
+  border-bottom-color: #E8835A;
+}
+
+.notas-credito-seccion {
+  width: 100%;
+}
+
+.notas-credito-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.notas-credito-header h2 {
+  margin: 0 0 .25rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.notas-credito-header p {
+  margin: 0;
+  color: var(--texto-suave,#9A8A7A);
+  font-size: .9rem;
+}
+
+.notas-credito-tabla {
+  min-width: 1100px;
+}
+
+.notas-credito-tabla td:nth-child(5) {
+  max-width: 250px;
+}
+
+@media (max-width:800px) {
+  .notas-credito-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .facturacion-tabs {
+    overflow-x: auto;
+  }
+
+  .facturacion-tabs button {
+    white-space: nowrap;
+  }
+}

@@ -42,6 +42,10 @@ export default function Facturas() {
   const [motivo, setMotivo] = useState('');
   const [procesando, setProcesando] = useState(false);
   const [errorAnulacion, setErrorAnulacion] = useState('');
+  const [vista, setVista] = useState('facturas');
+const [notasCredito, setNotasCredito] = useState([]);
+const [cargandoNotas, setCargandoNotas] = useState(false);
+const [errorNotas, setErrorNotas] = useState('');
 
   const cargarFacturas = useCallback(async () => {
     setCargando(true);
@@ -56,10 +60,31 @@ export default function Facturas() {
       setCargando(false);
     }
   }, []);
+  const cargarNotasCredito = useCallback(async () => {
+  setCargandoNotas(true);
+  setErrorNotas('');
+
+  try {
+    const res = await axios.get(`${API_URL}/notas-credito`, {
+      headers: auth(),
+    });
+
+    setNotasCredito(Array.isArray(res.data) ? res.data : []);
+  } catch (err) {
+    console.error(err);
+    setErrorNotas(
+      err.response?.data?.error ||
+      'No se pudieron cargar las notas de crédito.'
+    );
+  } finally {
+    setCargandoNotas(false);
+  }
+}, []);
 
   useEffect(() => {
-    cargarFacturas();
-  }, [cargarFacturas]);
+  cargarFacturas();
+  cargarNotasCredito();
+}, [cargarFacturas, cargarNotasCredito]);
 
   const resumen = useMemo(() => ({
     total: facturas.length,
@@ -121,6 +146,9 @@ export default function Facturas() {
 
       setModalAnular(false);
       await cargarFacturas();
+      if (tipoReversion === 'nota_credito') {
+  await cargarNotasCredito();
+}
 
       if (res.data?.nota_credito) {
         alert(
@@ -155,10 +183,33 @@ export default function Facturas() {
           <h1>Facturación</h1>
           <p>Facturas emitidas, anulaciones y notas de crédito.</p>
         </div>
-        <button className="btn-primario" onClick={cargarFacturas} disabled={cargando}>
+        <button className="btn-primario" onClick={() => {
+  cargarFacturas();
+  cargarNotasCredito();
+}} disabled={cargando}>
           {cargando ? 'Actualizando...' : '↻ Actualizar'}
         </button>
       </div>
+      <div className="facturacion-tabs">
+  <button
+    className={vista === 'facturas' ? 'activa' : ''}
+    onClick={() => setVista('facturas')}
+  >
+    🧾 Facturas
+  </button>
+
+  <button
+    className={vista === 'notas' ? 'activa' : ''}
+    onClick={() => {
+      setVista('notas');
+      cargarNotasCredito();
+    }}
+  >
+    🧾 Notas de crédito
+  </button>
+</div>
+{vista === 'facturas' && (
+  <>
 
       <div className="facturas-resumen">
         <div className="facturas-card"><strong>{resumen.total}</strong><span>Facturas</span></div>
@@ -220,6 +271,127 @@ export default function Facturas() {
           </table>
         </div>
       )}
+      </>
+)}
+
+{vista === 'notas' && (
+  <div className="notas-credito-seccion">
+
+    <div className="notas-credito-header">
+      <div>
+        <h2>Notas de crédito</h2>
+        <p>
+          Créditos generados por anulaciones de facturas.
+        </p>
+      </div>
+
+      <button
+        className="btn-primario"
+        onClick={cargarNotasCredito}
+        disabled={cargandoNotas}
+      >
+        {cargandoNotas ? 'Actualizando...' : '↻ Actualizar'}
+      </button>
+    </div>
+
+    {errorNotas && (
+      <div className="facturas-alerta error">
+        ⚠️ {errorNotas}
+      </div>
+    )}
+
+    {cargandoNotas ? (
+      <div className="facturas-vacio">
+        Cargando notas de crédito...
+      </div>
+    ) : notasCredito.length === 0 ? (
+      <div className="facturas-vacio">
+        <span>🧾</span>
+        <strong>No hay notas de crédito</strong>
+        <p>
+          Las notas de crédito aparecerán cuando se anulen
+          facturas utilizando esta opción.
+        </p>
+      </div>
+    ) : (
+      <div className="facturas-tabla-wrap">
+        <table className="facturas-tabla notas-credito-tabla">
+          <thead>
+            <tr>
+              <th>Nota de crédito</th>
+              <th>Factura</th>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Motivo</th>
+              <th>Monto</th>
+              <th>Saldo disponible</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {notasCredito.map((nc) => (
+              <tr key={nc.id_nota_credito}>
+                <td>
+                  <strong>
+                    NC #{nc.id_nota_credito}
+                  </strong>
+                </td>
+
+                <td>
+                  <strong>
+                    #{nc.id_factura}
+                  </strong>
+                </td>
+
+                <td>
+                  {fecha(nc.fecha)}
+                </td>
+
+                <td>
+                  {nc.cliente_nombre || '—'}{' '}
+                  {nc.cliente_apellido || ''}
+                </td>
+
+                <td>
+                  {nc.motivo || '—'}
+                </td>
+
+                <td>
+                  <strong>
+                    {dinero(nc.monto_original)}
+                  </strong>
+                </td>
+
+                <td>
+                  <strong>
+                    {dinero(nc.saldo_disponible)}
+                  </strong>
+                </td>
+
+                <td>
+                  <span
+                    className={`factura-badge ${
+                      nc.estado === 'anulada'
+                        ? 'anulada'
+                        : 'emitida'
+                    }`}
+                  >
+                    {nc.estado === 'anulada'
+                      ? 'Anulada'
+                      : nc.saldo_disponible > 0
+                        ? 'Disponible'
+                        : 'Utilizada'}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+)}
 
       {facturaSeleccionada && !modalAnular && (
         <div className="modal-overlay" onClick={() => setFacturaSeleccionada(null)}>
