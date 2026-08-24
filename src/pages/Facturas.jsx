@@ -46,6 +46,8 @@ export default function Facturas() {
 const [notasCredito, setNotasCredito] = useState([]);
 const [cargandoNotas, setCargandoNotas] = useState(false);
 const [errorNotas, setErrorNotas] = useState('');
+const [notaCreditoSeleccionada, setNotaCreditoSeleccionada] = useState(null);
+const [cargandoDetalleNota, setCargandoDetalleNota] = useState(false);
 
   const cargarFacturas = useCallback(async () => {
     setCargando(true);
@@ -107,6 +109,31 @@ const [errorNotas, setErrorNotas] = useState('');
       setCargandoDetalle(false);
     }
   }
+  async function verNotaCredito(nota) {
+  setCargandoDetalleNota(true);
+  setErrorNotas('');
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/notas-credito/${nota.id_nota_credito}`,
+      { headers: auth() }
+    );
+
+    setNotaCreditoSeleccionada(res.data);
+  } catch (err) {
+    console.error(err);
+    setErrorNotas(
+      err.response?.data?.error ||
+      'No se pudo obtener la nota de crédito.'
+    );
+  } finally {
+    setCargandoDetalleNota(false);
+  }
+}
+
+function imprimirNotaCredito() {
+  window.print();
+}
 
   function abrirAnulacion(factura) {
     setFacturaSeleccionada(factura);
@@ -285,13 +312,7 @@ const [errorNotas, setErrorNotas] = useState('');
         </p>
       </div>
 
-      <button
-        className="btn-primario"
-        onClick={cargarNotasCredito}
-        disabled={cargandoNotas}
-      >
-        {cargandoNotas ? 'Actualizando...' : '↻ Actualizar'}
-      </button>
+    
     </div>
 
     {errorNotas && (
@@ -326,6 +347,7 @@ const [errorNotas, setErrorNotas] = useState('');
               <th>Monto</th>
               <th>Saldo disponible</th>
               <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
 
@@ -383,6 +405,14 @@ const [errorNotas, setErrorNotas] = useState('');
                         ? 'Disponible'
                         : 'Utilizada'}
                   </span>
+                </td>
+                <td>
+                  <button
+                    className="btn-secundario"
+                    onClick={() => verNotaCredito(nc)}
+                  >
+                    Ver detalle
+                  </button>
                 </td>
               </tr>
             ))}
@@ -457,6 +487,146 @@ const [errorNotas, setErrorNotas] = useState('');
           </div>
         </div>
       )}
+      {notaCreditoSeleccionada && (
+  <div
+    className="modal-overlay"
+    onClick={() => setNotaCreditoSeleccionada(null)}
+  >
+    <div
+      className="modal modal-grande factura-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="modal-header">
+        <div>
+          <h2>
+            Nota de crédito #{notaCreditoSeleccionada.id_nota_credito}
+          </h2>
+
+          <p className="modal-subtitulo">
+            {fecha(notaCreditoSeleccionada.fecha)}
+          </p>
+        </div>
+
+        <button
+          className="modal-cerrar"
+          onClick={() => setNotaCreditoSeleccionada(null)}
+        >
+          ✕
+        </button>
+      </div>
+
+      <div className="modal-body factura-imprimible">
+        {cargandoDetalleNota ? (
+          <div className="facturas-vacio">
+            Cargando detalle...
+          </div>
+        ) : (
+          <>
+            <div className="factura-info-grid">
+              <div>
+                <span>Cliente</span>
+                <strong>
+                  {notaCreditoSeleccionada.cliente_nombre}{' '}
+                  {notaCreditoSeleccionada.cliente_apellido}
+                </strong>
+              </div>
+
+              <div>
+                <span>Email</span>
+                <strong>
+                  {notaCreditoSeleccionada.cliente_email || '—'}
+                </strong>
+              </div>
+
+              <div>
+                <span>Factura original</span>
+                <strong>
+                  #{notaCreditoSeleccionada.id_factura}
+                </strong>
+              </div>
+
+              <div>
+                <span>Motivo</span>
+                <strong>
+                  {notaCreditoSeleccionada.motivo || '—'}
+                </strong>
+              </div>
+
+              <div>
+                <span>Estado</span>
+                <strong>
+                  {notaCreditoSeleccionada.estado === 'anulada'
+                    ? 'Anulada'
+                    : Number(notaCreditoSeleccionada.saldo_disponible) > 0
+                      ? 'Disponible'
+                      : 'Utilizada'}
+                </strong>
+              </div>
+
+              <div>
+                <span>Monto</span>
+                <strong>
+                  {dinero(notaCreditoSeleccionada.monto_original)}
+                </strong>
+              </div>
+
+              <div>
+                <span>Saldo disponible</span>
+                <strong>
+                  {dinero(notaCreditoSeleccionada.saldo_disponible)}
+                </strong>
+              </div>
+            </div>
+
+            <div className="factura-detalle-titulo">
+              Productos
+            </div>
+
+            <table className="factura-detalle-tabla">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Variante</th>
+                  <th>Cantidad</th>
+                  <th>Precio</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {(notaCreditoSeleccionada.detalle || []).map((d) => (
+                  <tr key={d.id_nota_credito_detalle}>
+                    <td>{d.nombre_producto}</td>
+                    <td>{d.nombre_variante || '—'}</td>
+                    <td>{d.cantidad}</td>
+                    <td>{dinero(d.precio_unitario)}</td>
+                    <td>{dinero(d.subtotal)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+      </div>
+
+      <div className="modal-footer no-print">
+        <button
+          className="btn-secundario"
+          onClick={imprimirNotaCredito}
+        >
+          🖨️ Imprimir
+        </button>
+
+        <button
+          className="btn-primario"
+          onClick={() => setNotaCreditoSeleccionada(null)}
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {modalAnular && facturaSeleccionada && (
         <div className="modal-overlay" onClick={cerrarAnulacion}>
