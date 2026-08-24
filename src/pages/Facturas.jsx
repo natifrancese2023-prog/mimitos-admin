@@ -433,14 +433,19 @@ function imprimirNotaCredito() {
               </div>
               <button className="modal-cerrar" onClick={() => setFacturaSeleccionada(null)}>✕</button>
             </div>
-              <div className="documento-titulo">
-  <h1>FACTURA</h1>
-  <strong>
-    N° {String(facturaSeleccionada.id_factura).padStart(8, '0')}
-  </strong>
-</div>
+              
 
             <div className="modal-body factura-imprimible">
+
+              <div>
+    <h1>FACTURA</h1>
+    <strong>
+      N° {String(facturaSeleccionada.id_factura).padStart(8, "0")}
+    </strong>
+  </div>
+</div>
+  
+
               {cargandoDetalle ? (
                 <div className="facturas-vacio">Cargando detalle...</div>
               ) : (
@@ -522,20 +527,20 @@ function imprimirNotaCredito() {
       </div>
 
       <div className="modal-body factura-imprimible">
+        <div>
+    <h1>NOTA DE CRÉDITO</h1>
+    <strong>
+      N° {String(notaCreditoSeleccionada.id_nota_credito).padStart(8, "0")}
+    </strong>
+  </div>
+</div>
         {cargandoDetalleNota ? (
           <div className="facturas-vacio">
             Cargando detalle...
           </div>
         ) : (
           <>
-          <div className="documento-titulo">
-  <h1>NOTA DE CRÉDITO</h1>
-  <strong>
-    N° {String(
-      notaCreditoSeleccionada.id_nota_credito
-    ).padStart(8, '0')}
-  </strong>
-</div>
+      
             <div className="factura-info-grid">
               <div>
                 <span>Cliente</span>
